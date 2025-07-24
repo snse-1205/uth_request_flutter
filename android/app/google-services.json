@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "914995351487",
+    "project_id": "uthrequest",
+    "storage_bucket": "uthrequest.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:914995351487:android:fc7596152b827f80519b0a",
+        "android_client_info": {
+          "package_name": "com.example.uth_request_flutter_application"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBVvcFQ54pKkZbXdyShD3auzN5jp1IRu1E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

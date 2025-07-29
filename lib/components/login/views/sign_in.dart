@@ -1,5 +1,8 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:uth_request_flutter_application/components/login/views/change_password.dart';
+import 'package:uth_request_flutter_application/components/pages/fondo_inicio_sesion.dart';
+import 'package:uth_request_flutter_application/components/register/views/sign_up.dart';
 import 'package:uth_request_flutter_application/components/utils/color.dart';
 import 'package:uth_request_flutter_application/components/utils/string.dart';
 
@@ -14,7 +17,7 @@ class LoginScreen extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Image.asset('assets/logo_UTH_verde.png', height: 150),
-
+          SizedBox(height: 16),
           TextField(
             decoration: InputDecoration(
               hintText: textoCorreoElectronico,
@@ -82,19 +85,34 @@ class LoginScreen extends StatelessWidget {
               children: [
                 TextSpan(
                   text: botonNoTienesCuenta,
-                  style: TextStyle(decoration: TextDecoration.underline),
+                  style: const TextStyle(decoration: TextDecoration.underline),
                   recognizer: TapGestureRecognizer()
                     ..onTap = () {
-                      print("Redirigir a registro");
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const FondoInicioSesion(
+                            widget_child: RegisterScreen(),
+                          ),
+                        ),
+                      );
                     },
                 ),
-                TextSpan(text: "\n"),
+                const TextSpan(text: "\n"),
+                const TextSpan(text: "\n"),
                 TextSpan(
                   text: botonOlvidarContrasena,
-                  style: TextStyle(decoration: TextDecoration.underline),
+                  style: const TextStyle(decoration: TextDecoration.underline),
                   recognizer: TapGestureRecognizer()
                     ..onTap = () {
-                      print("Redirigir a recuperar contraseña");
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const FondoInicioSesion(
+                            widget_child: ChangePasswordScreen(),
+                          ),
+                        ),
+                      );
                     },
                 ),
               ],

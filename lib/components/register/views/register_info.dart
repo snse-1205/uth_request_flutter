@@ -26,7 +26,25 @@ class RegisterInfo extends StatelessWidget {
 
           TextField(
             decoration: InputDecoration(
-              hintText: textNombreCompleto,
+              hintText: textNombres,
+              filled: true,
+              fillColor: AppColors.onSurface,
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: BorderSide.none,
+              ),
+              contentPadding: EdgeInsets.symmetric(
+                horizontal: 16,
+                vertical: 12,
+              ),
+              hintStyle: TextStyle(color: AppColors.onSecondaryText),
+            ),
+          ),
+          SizedBox(height: 16),
+
+          TextField(
+            decoration: InputDecoration(
+              hintText: textApellidos,
               filled: true,
               fillColor: AppColors.onSurface,
               border: OutlineInputBorder(

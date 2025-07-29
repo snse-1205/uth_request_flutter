@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:uth_request_flutter_application/components/login/views/sign_in.dart';
 import 'package:uth_request_flutter_application/components/pages/fondo_inicio_sesion.dart';
 import 'package:uth_request_flutter_application/components/utils/color.dart';
 
@@ -13,10 +14,7 @@ class MainApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
-        /*body: SingleChildScrollView(
-            child: ClaseCard(),
-        ),*/
-        body: FondoInicioSesion(),
+        body: FondoInicioSesion(widget_child: LoginScreen(),),
         backgroundColor: AppColors.onBackgroundDefault,
       ),
     );

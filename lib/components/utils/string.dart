@@ -25,3 +25,13 @@ String botonRegistrarse = "REGISTRARSE";
 String botonOlvidarContrasena = "¿Olvidaste tu contraseña?";
 String botonNoTienesCuenta = "¿No tienes cuenta?";
 
+String textRegistroCuenta = "Registro de Cuenta";
+String textNumeroCuenta = "Número de Cuenta Universitario";
+String textSeleccionaCampus = "Selecciona tu Campus";
+String textSeleccionaCarrera = "Selecciona tu Carrera";
+String textNombreCompleto = "Nombre y Apellidos";
+String botonSiguiente = "SIGUIENTE";
+String botonFinalizar = "FINALIZAR";
+String botonAtras = "ATRÁS";
+String botonVerificarPin = "VERIFICAR PIN";
+String textVerificarPinMensaje = "Ingresa el PIN enviado a tu correo";

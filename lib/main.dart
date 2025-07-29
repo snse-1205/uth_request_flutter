@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:uth_request_flutter_application/components/login/views/card_peticiones.dart';
-import 'package:uth_request_flutter_application/components/login/views/signup.dart';
+import 'package:uth_request_flutter_application/components/pages/fondo_inicio_sesion.dart';
 import 'package:uth_request_flutter_application/components/utils/color.dart';
 
 void main() {
@@ -14,11 +13,11 @@ class MainApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
-        body: SingleChildScrollView(
+        /*body: SingleChildScrollView(
             child: ClaseCard(),
-        ),
-        /*body: LoginScreen(),
-        backgroundColor: AppColors.onBackgroundDefault,*/
+        ),*/
+        body: FondoInicioSesion(),
+        backgroundColor: AppColors.onBackgroundDefault,
       ),
     );
   }

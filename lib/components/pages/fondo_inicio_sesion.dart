@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:uth_request_flutter_application/components/login/views/signup.dart';
+import 'package:uth_request_flutter_application/components/register/views/sign_up.dart';
 import 'package:uth_request_flutter_application/components/utils/color.dart';
 
-class MyWidget extends StatelessWidget {
-  const MyWidget({super.key});
+class FondoInicioSesion extends StatelessWidget {
+  const FondoInicioSesion({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +37,7 @@ class MyWidget extends StatelessWidget {
           ),
 
           Center(
-            child: LoginScreen()
+            child: RegisterScreen()
           ),
         ],
       ),

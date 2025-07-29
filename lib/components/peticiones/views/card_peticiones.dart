@@ -3,8 +3,11 @@ import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:uth_request_flutter_application/components/utils/color.dart';
 import 'package:uth_request_flutter_application/components/utils/string.dart';
 
-class ClaseCard extends StatelessWidget {
-  const ClaseCard({super.key});
+class CardPeticiones extends StatelessWidget {
+  const CardPeticiones({super.key, required this.community, required this.deacuerdo});
+
+  final bool community;
+  final bool deacuerdo;
 
   @override
   Widget build(BuildContext context) {

@@ -28,7 +28,10 @@ class AppColors {
   // Colores para los items del BottomNavigationBar
   static const Color nonSelectedItem = Color(0xFFA6BE9D);
   static const Color selectedItem = Color(0xFFE3F0DF);
-  
+
+  static const Color selectedNavbar = Color(0xFF4EB887);
+  static const Color nonSelectedNavbar = Color(0xFF9CB9A3);
+
   static const Color electricError = Color(0xFFAF4343);
   static const Color error = Color(0xFF843D54);
 }

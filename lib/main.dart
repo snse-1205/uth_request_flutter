@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:get/get_navigation/src/root/get_material_app.dart';
-import 'package:uth_request_flutter_application/components/pages/home_page.dart';
-import 'package:uth_request_flutter_application/components/utils/string.dart';
+import 'package:uth_request_flutter_application/components/login/views/sign_in.dart';
+import 'package:uth_request_flutter_application/components/pages/fondo_inicio_sesion.dart';
+import 'package:uth_request_flutter_application/components/utils/color.dart';
 
 void main() {
   runApp(const MainApp());
@@ -12,9 +12,11 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GetMaterialApp(
-      title: (usuario),
-      home: HomePage()
+    return MaterialApp(
+      home: Scaffold(
+        body: FondoInicioSesion(widget_child: LoginScreen(),),
+        backgroundColor: AppColors.onBackgroundDefault,
+      ),
     );
   }
 }

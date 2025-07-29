@@ -42,3 +42,19 @@ String textConfirmarContrasena = "Confirmar Contraseña";
 String textNuevaContrasena = "Nueva Contraseña";
 String textConfirmarNuevaContrasena = "Confirmar Nueva Contraseña";
 String textGuardarCambios = "Guardar Cambios";
+
+String usuario = "Stacy Sauceda";
+String peticiones = "Peticiones";
+String comunidad = "comunidad";
+String anuncios = "anuncios";
+
+
+// notificacion
+String atencion = "ATENCION";
+String administracion = "ADMINISTRACION";
+String notificacionMensaje = "TU APERTURA DE CLASE";
+String clase = "PROGRAMACION MOVIL 2";
+String estadoAceptado = "HA SIDO ACEPTADA";
+String estadoLleno = "SE HA LLENADO CORRECTAMENTE";
+String estadoDenegado = "HA SIDO DENEGADA";
+String fecha = "12/02/2025 10:00 AM";

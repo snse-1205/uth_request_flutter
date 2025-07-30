@@ -1,20 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:uth_request_flutter_application/components/utils/string.dart';
+
 
 class CreateRequest extends StatefulWidget {
-  const CreateRequest({super.key});
+   const CreateRequest({super.key});
 
   @override
   State<CreateRequest> createState() => _CreateRequestState();
 }
 
 class _CreateRequestState extends State<CreateRequest> {
-  // Controladores y variables de estado
   String requestType = 'APERTURA DE CLASE';
   String? selectedSubject;
   String? selectedDay;
   String modality = 'Presencial';
-  TimeOfDay startTime = const TimeOfDay(hour: 0, minute: 0);
-  TimeOfDay endTime = const TimeOfDay(hour: 0, minute: 0);
+  TimeOfDay startTime =  TimeOfDay(hour: 0, minute: 0);
+  TimeOfDay endTime =  TimeOfDay(hour: 0, minute: 0);
 
   final List<String> requestTypes = ['APERTURA DE CLASE', 'OTRA OPCIÓN'];
   final List<String> subjects = ['Asignatura 1', 'Asignatura 2', 'Asignatura 3'];
@@ -40,9 +41,9 @@ class _CreateRequestState extends State<CreateRequest> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('CREAR PETICIÓN')),
+      appBar: AppBar(title: Text(CreateRequest_CrearPeticionTitle)),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -57,13 +58,11 @@ class _CreateRequestState extends State<CreateRequest> {
                   requestType = value!;
                 });
               },
-              decoration: const InputDecoration(
-                labelText: 'Tipo de Petición',
+              decoration:  InputDecoration(
+                labelText: CreateRequest_TipoPeticionLabel,
               ),
             ),
-            const SizedBox(height: 10),
-
-            const Text('PERIODO 03-2025'),
+             SizedBox(height: 10),
 
             // Dropdown de asignatura
             DropdownButtonFormField<String>(
@@ -76,11 +75,11 @@ class _CreateRequestState extends State<CreateRequest> {
                   selectedSubject = value;
                 });
               },
-              decoration: const InputDecoration(
-                labelText: 'Asignatura',
+              decoration:  InputDecoration(
+                labelText: CreateRequest_AsignaturaLabel,
               ),
             ),
-            const SizedBox(height: 10),
+             SizedBox(height: 10),
 
             // Radio buttons de modalidad
             Row(
@@ -94,7 +93,7 @@ class _CreateRequestState extends State<CreateRequest> {
                     });
                   },
                 ),
-                const Text('Presencial'),
+                 Text(CreateRequest_ModalidadPresencial),
                 Radio<String>(
                   value: 'Presencial-ZOOM',
                   groupValue: modality,
@@ -104,14 +103,13 @@ class _CreateRequestState extends State<CreateRequest> {
                     });
                   },
                 ),
-                const Text('Presencial-ZOOM'),
+                 Text(CreateRequest_ModalidadZoom),
               ],
             ),
-            const Text(
-              '*Si elige presencial, automáticamente será en el campus de tu perfil seleccionado',
+             Text(CreateRequest_ModalidadInfo,
               style: TextStyle(fontSize: 12),
             ),
-            const SizedBox(height: 10),
+             SizedBox(height: 10),
 
             // Dropdown de días
             DropdownButtonFormField<String>(
@@ -124,11 +122,11 @@ class _CreateRequestState extends State<CreateRequest> {
                   selectedDay = value;
                 });
               },
-              decoration: const InputDecoration(
-                labelText: 'Fecha',
+              decoration:  InputDecoration(
+                labelText: CreateRequest_FechaLabel,
               ),
             ),
-            const SizedBox(height: 10),
+             SizedBox(height: 10),
 
             // Selección de hora de inicio y fin
             Row(
@@ -137,20 +135,20 @@ class _CreateRequestState extends State<CreateRequest> {
                   child: InkWell(
                     onTap: () => _selectTime(context, true),
                     child: InputDecorator(
-                      decoration: const InputDecoration(
-                        labelText: 'Inicio',
+                      decoration:  InputDecoration(
+                        labelText: CreateRequest_InicioLabel,
                       ),
                       child: Text(startTime.format(context)),
                     ),
                   ),
                 ),
-                const SizedBox(width: 16),
+                 SizedBox(width: 16),
                 Expanded(
                   child: InkWell(
                     onTap: () => _selectTime(context, false),
                     child: InputDecorator(
-                      decoration: const InputDecoration(
-                        labelText: 'Fin',
+                      decoration:  InputDecoration(
+                        labelText: CreateRequest_FinLabel,
                       ),
                       child: Text(endTime.format(context)),
                     ),
@@ -158,7 +156,7 @@ class _CreateRequestState extends State<CreateRequest> {
                 ),
               ],
             ),
-            const Spacer(),
+             Spacer(),
 
             // Botón de enviar
             SizedBox(
@@ -168,12 +166,11 @@ class _CreateRequestState extends State<CreateRequest> {
                   // Aquí podrías validar y enviar la petición
                   print('Petición enviada');
                 },
-                child: const Text('ENVIAR PETICIÓN'),
+                child:  Text(CreateRequest_EnviarPeticionButton),
               ),
             ),
-            const SizedBox(height: 8),
-            const Text(
-              '*Puede crear una petición, pero será cuestión del administrador aceptar la apertura de esta clase. Se le notificará al administrador de esta petición',
+             SizedBox(height: 8),
+             Text(CreateRequest_EnviarPeticionNota,
               style: TextStyle(fontSize: 11),
             ),
           ],

@@ -29,7 +29,7 @@ class MisPeticionesView extends StatelessWidget {
               children: [
                 CardPeticiones(community: false, deacuerdo: false),
                 CardPeticiones(community: false, deacuerdo: false),
-                CardPeticiones(community: false, deacuerdo: true),
+                CardPeticiones(community: false, deacuerdo: false),
               ],
             ),
           ],

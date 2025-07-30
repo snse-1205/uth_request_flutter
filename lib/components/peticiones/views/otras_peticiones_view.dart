@@ -27,9 +27,9 @@ class OtrasPeticionesView extends StatelessWidget {
               shrinkWrap: true,
               physics: NeverScrollableScrollPhysics(),
               children: [
-                CardPeticiones(community: true, deacuerdo: false),
-                CardPeticiones(community: true, deacuerdo: false),
-                CardPeticiones(community: true, deacuerdo: true),
+                CardPeticiones(community: false, deacuerdo: true),
+                CardPeticiones(community: false, deacuerdo: true),
+                CardPeticiones(community: false, deacuerdo: true),
               ],
             ),
           ],

@@ -1,45 +1,49 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:uth_request_flutter_application/components/peticiones/views/mis_peticiones_view.dart';
+import 'package:uth_request_flutter_application/components/peticiones/views/otras_peticiones_view.dart';
 import 'package:uth_request_flutter_application/components/utils/color.dart';
+import 'package:uth_request_flutter_application/components/utils/string.dart';
+
 class PeticionesPage extends StatelessWidget {
   const PeticionesPage({super.key});
 
   @override
   Widget build(BuildContext context) {
- 
     return DefaultTabController(
-      length: 2, 
+      length: 2,
       child: Scaffold(
-        
-        
         appBar: AppBar(
-         toolbarHeight: 0,
-         backgroundColor: AppColors.nonSelectedItem,
-         foregroundColor: AppColors.primaryLight,
+          toolbarHeight: 0,
+          backgroundColor: AppColors.nonSelectedNavbar,
+          foregroundColor: AppColors.selectedNavbar,
           bottom: TabBar(
-          
-            tabs: const [
-            Tab(child: Text('Mis peticiones', style: TextStyle(color: AppColors.primaryLight,fontSize: 20)),),
-            Tab(child: Text('De acuerdo', style: TextStyle(color: AppColors.primaryLight, fontSize: 20,),),),
-          ],
-           indicator: BoxDecoration(
-              color: AppColors.primaryVariant,
-             
-            ),
+            tabs: [
+              Tab(
+                child: Text(
+                  textMisPeticiones,
+                  style: TextStyle(color: AppColors.onSurface, fontSize: 16),
+                ),
+              ),
+              Tab(
+                child: Text(
+                  textDeAcuerdo,
+                  style: TextStyle(color: AppColors.onSurface, fontSize: 16),
+                ),
+              ),
+            ],
+            indicator: BoxDecoration(color: AppColors.selectedNavbar),
             indicatorSize: TabBarIndicatorSize.tab,
-            dividerColor: AppColors.primaryLight
-
-         
+            dividerColor: AppColors.onSurface,
           ),
-
-          
-        
         ),
         body: const TabBarView(
           children: [
-            Center(child: Text('Peticiones Pendientes', style: TextStyle(fontSize: 20))),
-            Center(child: Text('Peticiones Aprobadas', style: TextStyle(fontSize: 20))),
-            
+            Center(
+              child: MisPeticionesView(),
+            ),
+            Center(
+              child: OtrasPeticionesView(),
+            ),
           ],
         ),
       ),

@@ -43,10 +43,15 @@ String textNuevaContrasena = "Nueva Contraseña";
 String textConfirmarNuevaContrasena = "Confirmar Nueva Contraseña";
 String textGuardarCambios = "Guardar Cambios";
 
-String usuario = "Stacy Sauceda";
+String usuario = "Stacy Nicole Sauceda Espinoza";
 String peticiones = "Peticiones";
-String comunidad = "comunidad";
-String anuncios = "anuncios";
+String comunidad = "Comunidad";
+String anuncios = "Anuncios";
+String textTemas = "TEMAS";
+String textPeticiones = "PETICIONES";
+String textMisPeticiones = "MIS PETICIONES";
+String textDeAcuerdo = "DE ACUERDO";
+String textComunidadUth = "COMUNIDAD UTH";
 
 
 // notificacion

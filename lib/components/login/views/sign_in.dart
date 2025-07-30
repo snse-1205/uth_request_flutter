@@ -1,7 +1,9 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:uth_request_flutter_application/components/login/views/change_password.dart';
 import 'package:uth_request_flutter_application/components/pages/fondo_inicio_sesion.dart';
+import 'package:uth_request_flutter_application/components/pages/home_page.dart';
 import 'package:uth_request_flutter_application/components/register/views/sign_up.dart';
 import 'package:uth_request_flutter_application/components/utils/color.dart';
 import 'package:uth_request_flutter_application/components/utils/string.dart';
@@ -62,7 +64,9 @@ class LoginScreen extends StatelessWidget {
           SizedBox(
             width: double.infinity,
             child: ElevatedButton(
-              onPressed: () {},
+              onPressed: () {
+                Get.off(() => HomePage());
+              },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Color(0xFF4B7756),
                 shape: RoundedRectangleBorder(
@@ -88,14 +92,7 @@ class LoginScreen extends StatelessWidget {
                   style: const TextStyle(decoration: TextDecoration.underline),
                   recognizer: TapGestureRecognizer()
                     ..onTap = () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => const FondoInicioSesion(
-                            widget_child: RegisterScreen(),
-                          ),
-                        ),
-                      );
+                      Get.to(FondoInicioSesion(widget_child: RegisterScreen()));
                     },
                 ),
                 const TextSpan(text: "\n"),
@@ -105,13 +102,8 @@ class LoginScreen extends StatelessWidget {
                   style: const TextStyle(decoration: TextDecoration.underline),
                   recognizer: TapGestureRecognizer()
                     ..onTap = () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => const FondoInicioSesion(
-                            widget_child: ChangePasswordScreen(),
-                          ),
-                        ),
+                      Get.to(
+                        FondoInicioSesion(widget_child: ChangePasswordScreen()),
                       );
                     },
                 ),

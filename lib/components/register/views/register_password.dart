@@ -3,7 +3,14 @@ import 'package:uth_request_flutter_application/components/utils/color.dart';
 import 'package:uth_request_flutter_application/components/utils/string.dart';
 
 class RegisterPassword extends StatefulWidget {
-  const RegisterPassword({super.key});
+  const RegisterPassword({
+    super.key,
+    required this.onPasswordChanged,
+    required this.onConfirmPasswordChanged,
+  });
+
+  final Function(String) onPasswordChanged;
+  final Function(String) onConfirmPasswordChanged;
 
   @override
   State<RegisterPassword> createState() => _RegisterPasswordState();
@@ -25,6 +32,7 @@ class _RegisterPasswordState extends State<RegisterPassword> {
           TextField(
             controller: _passwordController,
             obscureText: _obscurePassword,
+            onChanged: widget.onPasswordChanged,
             decoration: InputDecoration(
               hintText: textoContrasena,
               filled: true,
@@ -56,6 +64,7 @@ class _RegisterPasswordState extends State<RegisterPassword> {
           TextField(
             controller: _confirmController,
             obscureText: _obscureConfirm,
+            onChanged: widget.onConfirmPasswordChanged,
             decoration: InputDecoration(
               hintText: "Confirmar contraseña",
               filled: true,

@@ -4,7 +4,11 @@ import 'package:uth_request_flutter_application/components/utils/color.dart';
 import 'package:uth_request_flutter_application/components/utils/string.dart';
 
 class RegisterAcademicPage extends StatefulWidget {
-  const RegisterAcademicPage({super.key});
+  const RegisterAcademicPage({super.key, required this.onCampusChanged, required this.onCarreraChanged, required this.onCuentaChanged});
+
+  final Function(String) onCampusChanged;
+  final Function(String) onCarreraChanged;
+  final Function(String) onCuentaChanged;
 
   @override
   State<RegisterAcademicPage> createState() => _RegisterAcademicPageState();
@@ -35,6 +39,7 @@ class _RegisterAcademicPageState extends State<RegisterAcademicPage> {
       child: Column(
         children: [
           TextField(
+            onChanged: widget.onCuentaChanged,
             keyboardType: TextInputType.number,
             inputFormatters: [FilteringTextInputFormatter.digitsOnly],
             decoration: InputDecoration(
@@ -78,6 +83,7 @@ class _RegisterAcademicPageState extends State<RegisterAcademicPage> {
             onChanged: (value) {
               setState(() {
                 selectedCampus = value;
+                widget.onCampusChanged(value ?? '');
               });
             },
           ),
@@ -107,6 +113,7 @@ class _RegisterAcademicPageState extends State<RegisterAcademicPage> {
             onChanged: (value) {
               setState(() {
                 selectedCarrera = value;
+                widget.onCarreraChanged(value ?? '');
               });
             },
           ),

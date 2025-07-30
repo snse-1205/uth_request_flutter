@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:uth_request_flutter_application/components/register/controllers/controller_auth.dart';
+import 'package:uth_request_flutter_application/components/register/models/estudiantes_models.dart';
 import 'package:uth_request_flutter_application/components/register/views/register_academic.dart';
 import 'package:uth_request_flutter_application/components/register/views/register_email_pin.dart';
 import 'package:uth_request_flutter_application/components/register/views/register_info.dart';
@@ -16,6 +18,15 @@ class RegisterScreen extends StatefulWidget {
 class _RegisterScreenState extends State<RegisterScreen> {
   final PageController _pageController = PageController();
   int _currentPage = 0;
+
+  String nombre = '';
+  String apellido = '';
+  String correo = '';
+  String campus = '';
+  String carrera = '';
+  String cuenta = '';
+  String contrasena = '';
+  String confirmarContrasena = '';
 
   @override
   Widget build(BuildContext context) {
@@ -35,15 +46,33 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   });
                 },
                 children: [
-                  Center(child: RegisterInfo()),
-                  Center(child: RegisterAcademicPage()),
+                  Center(
+                    child: RegisterInfo(
+                      onNombreChanged: (value) => nombre = value,
+                      onApellidoChanged: (value) => apellido = value,
+                      onCorreoChanged: (value) => correo = value,
+                    ),
+                  ),
+                  Center(
+                    child: RegisterAcademicPage(
+                      onCampusChanged: (value) => campus = value,
+                      onCarreraChanged: (value) => carrera = value,
+                      onCuentaChanged: (value) => cuenta = value,
+                    ),
+                  ),
                   Center(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [RegisterEmailPinPage()],
                     ),
                   ),
-                  Center(child: RegisterPassword()),
+                  Center(
+                    child: RegisterPassword(
+                      onPasswordChanged: (value) => contrasena = value,
+                      onConfirmPasswordChanged: (value) =>
+                          confirmarContrasena = value,
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -106,6 +135,17 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           );
                         } else {
                           print("Registro completado");
+                          _registroEstudiante(
+                            context,
+                            nombre,
+                            apellido,
+                            correo,
+                            campus,
+                            carrera,
+                            cuenta,
+                            contrasena,
+                            confirmarContrasena,
+                          );
                         }
                       },
                       icon: Icon(Icons.arrow_forward, color: Colors.white),
@@ -150,6 +190,81 @@ class _RegisterScreenState extends State<RegisterScreen> {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+Future<void> _registroEstudiante(
+  BuildContext context,
+  String nombre,
+  String apellido,
+  String correo,
+  String campus,
+  String carrera,
+  String cuenta,
+  String contrasena,
+  String confirmarContrasena,
+) async {
+  if (contrasena != confirmarContrasena) {
+    showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: Text('Error'),
+        content: Text('Las contraseñas no coinciden.'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text('OK'),
+          ),
+        ],
+      ),
+    );
+    return;
+  }
+
+  final estudiante = EstudianteModel(
+    nombre: nombre,
+    apellido: apellido,
+    correo: correo,
+    campus: campus,
+    carrera: carrera,
+    cuenta: cuenta,
+  );
+
+  final controller = RegisterController();
+  String? error = await controller.registrarEstudiante(
+    correo: correo,
+    contrasena: contrasena,
+    estudiante: estudiante,
+  );
+
+  if (error == null) {
+    showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: Text('Registro exitoso'),
+        content: Text('Tu cuenta ha sido creada correctamente.'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text('Aceptar'),
+          ),
+        ],
+      ),
+    );
+  } else {
+    showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: Text('Error'),
+        content: Text(error),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text('Cerrar'),
+          ),
+        ],
       ),
     );
   }

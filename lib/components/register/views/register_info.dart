@@ -3,7 +3,16 @@ import 'package:uth_request_flutter_application/components/utils/color.dart';
 import 'package:uth_request_flutter_application/components/utils/string.dart';
 
 class RegisterInfo extends StatelessWidget {
-  const RegisterInfo({super.key});
+  const RegisterInfo({
+    super.key,
+    required this.onNombreChanged,
+    required this.onApellidoChanged,
+    required this.onCorreoChanged,
+  });
+
+  final Function(String) onNombreChanged;
+  final Function(String) onApellidoChanged;
+  final Function(String) onCorreoChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -25,6 +34,7 @@ class RegisterInfo extends StatelessWidget {
           SizedBox(height: 24),
 
           TextField(
+            onChanged: onNombreChanged,
             decoration: InputDecoration(
               hintText: textNombres,
               filled: true,
@@ -43,6 +53,7 @@ class RegisterInfo extends StatelessWidget {
           SizedBox(height: 16),
 
           TextField(
+            onChanged: onApellidoChanged,
             decoration: InputDecoration(
               hintText: textApellidos,
               filled: true,
@@ -61,6 +72,7 @@ class RegisterInfo extends StatelessWidget {
           SizedBox(height: 16),
 
           TextField(
+            onChanged: onCorreoChanged,
             decoration: InputDecoration(
               hintText: textoCorreoElectronico,
               filled: true,

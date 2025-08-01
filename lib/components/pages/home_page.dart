@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:uth_request_flutter_application/components/notificaciones/views/notificacionesVista.dart';
 import 'package:uth_request_flutter_application/components/shared/menu_drawer.dart';
 import 'package:uth_request_flutter_application/components/shared/navigation_controller.dart';
@@ -21,11 +22,24 @@ class _HomePageState extends State<HomePage> {
 
   bool showExtraButtons = false;
 
+  String nombre = '';
+  String apellido = '';
+  String campus = '';
+  String carrera = '';
+  String cuenta = '';
+  String rol = '';
+
   final List<Widget> paginas = [
     PeticionesPage(),
     TemasPage(),
     Notificacionesvista(),
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    _obtenerDatosStorage();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +55,7 @@ class _HomePageState extends State<HomePage> {
                     width: 200,
                     child: Flexible(
                       child: Text(
-                        usuario,
+                        '$nombre $apellido',
                         overflow: TextOverflow.ellipsis,
                         maxLines: 1,
                         style: TextStyle(fontSize: 20),
@@ -172,5 +186,21 @@ class _HomePageState extends State<HomePage> {
               ),
       ),
     );
+  }
+
+  void _obtenerDatosStorage() {
+    final storage = GetStorage();
+
+    setState(() {
+      nombre = storage.read('nombre') ?? '';
+      apellido = storage.read('apellido') ?? '';
+      campus = storage.read('campus') ?? '';
+      carrera = storage.read('carrera') ?? '';
+      cuenta = storage.read('cuenta') ?? '';
+      rol = storage.read('rol') ?? '';
+    });
+
+    print('Nombre: $nombre');
+    print('Apellido: $apellido');
   }
 }

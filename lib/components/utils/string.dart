@@ -63,3 +63,17 @@ String estadoAceptado = "HA SIDO ACEPTADA";
 String estadoLleno = "SE HA LLENADO CORRECTAMENTE";
 String estadoDenegado = "HA SIDO DENEGADA";
 String fecha = "12/02/2025 10:00 AM";
+
+// CreateRequest
+String CreateRequest_CrearPeticionTitle = 'CREAR PETICIÓN';
+String CreateRequest_TipoPeticionLabel = 'Tipo de Petición';
+String CreateRequest_AsignaturaLabel = 'Asignatura';
+String CreateRequest_ModalidadPresencial = 'Presencial';
+String CreateRequest_ModalidadZoom = 'Presencial-ZOOM';
+String CreateRequest_ModalidadInfo = '*Si elige presencial, automáticamente será en el campus de tu perfil seleccionado';
+String CreateRequest_FechaLabel = 'Fecha';
+String CreateRequest_InicioLabel = 'Inicio';
+String CreateRequest_FinLabel = 'Fin';
+String CreateRequest_EnviarPeticionButton = 'ENVIAR PETICIÓN';
+String CreateRequest_EnviarPeticionNota = '*Puede crear una petición, pero será cuestión del administrador aceptar la apertura de esta clase. Se le notificará al administrador de esta petición';
+

@@ -2,17 +2,59 @@ import 'package:flutter/material.dart';
 import 'package:uth_request_flutter_application/components/utils/color.dart';
 import 'package:uth_request_flutter_application/components/utils/string.dart';
 
-class RegisterInfo extends StatelessWidget {
+class RegisterInfo extends StatefulWidget {
   const RegisterInfo({
     super.key,
     required this.onNombreChanged,
     required this.onApellidoChanged,
     required this.onCorreoChanged,
+    this.initialNombre = '',
+    this.initialApellido = '',
+    this.initialCorreo = '',
   });
 
   final Function(String) onNombreChanged;
   final Function(String) onApellidoChanged;
   final Function(String) onCorreoChanged;
+
+  final String initialNombre;
+  final String initialApellido;
+  final String initialCorreo;
+
+  @override
+  State<RegisterInfo> createState() => _RegisterInfoState();
+}
+
+class _RegisterInfoState extends State<RegisterInfo> {
+  late TextEditingController _nombreController;
+  late TextEditingController _apellidoController;
+  late TextEditingController _correoController;
+
+  @override
+  void initState() {
+    super.initState();
+    _nombreController = TextEditingController(text: widget.initialNombre);
+    _apellidoController = TextEditingController(text: widget.initialApellido);
+    _correoController = TextEditingController(text: widget.initialCorreo);
+
+    _nombreController.addListener(() {
+      widget.onNombreChanged(_nombreController.text);
+    });
+    _apellidoController.addListener(() {
+      widget.onApellidoChanged(_apellidoController.text);
+    });
+    _correoController.addListener(() {
+      widget.onCorreoChanged(_correoController.text);
+    });
+  }
+
+  @override
+  void dispose() {
+    _nombreController.dispose();
+    _apellidoController.dispose();
+    _correoController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +76,7 @@ class RegisterInfo extends StatelessWidget {
           SizedBox(height: 24),
 
           TextField(
-            onChanged: onNombreChanged,
+            controller: _nombreController,
             decoration: InputDecoration(
               hintText: textNombres,
               filled: true,
@@ -53,7 +95,7 @@ class RegisterInfo extends StatelessWidget {
           SizedBox(height: 16),
 
           TextField(
-            onChanged: onApellidoChanged,
+            controller: _apellidoController,
             decoration: InputDecoration(
               hintText: textApellidos,
               filled: true,
@@ -72,7 +114,7 @@ class RegisterInfo extends StatelessWidget {
           SizedBox(height: 16),
 
           TextField(
-            onChanged: onCorreoChanged,
+            controller: _correoController,
             decoration: InputDecoration(
               hintText: textoCorreoElectronico,
               filled: true,

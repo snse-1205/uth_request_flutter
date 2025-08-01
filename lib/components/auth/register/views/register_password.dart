@@ -3,25 +3,52 @@ import 'package:uth_request_flutter_application/components/utils/color.dart';
 import 'package:uth_request_flutter_application/components/utils/string.dart';
 
 class RegisterPassword extends StatefulWidget {
+  final Function(String) onPasswordChanged;
+  final Function(String) onConfirmPasswordChanged;
+
+  final String initialPassword;
+  final String initialConfirm;
+
   const RegisterPassword({
     super.key,
     required this.onPasswordChanged,
     required this.onConfirmPasswordChanged,
+    this.initialPassword = '',
+    this.initialConfirm = '',
   });
-
-  final Function(String) onPasswordChanged;
-  final Function(String) onConfirmPasswordChanged;
 
   @override
   State<RegisterPassword> createState() => _RegisterPasswordState();
 }
 
 class _RegisterPasswordState extends State<RegisterPassword> {
-  final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _confirmController = TextEditingController();
+  late TextEditingController _passwordController;
+  late TextEditingController _confirmController;
 
   bool _obscurePassword = true;
   bool _obscureConfirm = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _passwordController = TextEditingController(text: widget.initialPassword);
+    _confirmController = TextEditingController(text: widget.initialConfirm);
+
+    // Escuchar cambios para llamar a las funciones externas
+    _passwordController.addListener(() {
+      widget.onPasswordChanged(_passwordController.text);
+    });
+    _confirmController.addListener(() {
+      widget.onConfirmPasswordChanged(_confirmController.text);
+    });
+  }
+
+  @override
+  void dispose() {
+    _passwordController.dispose();
+    _confirmController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +59,6 @@ class _RegisterPasswordState extends State<RegisterPassword> {
           TextField(
             controller: _passwordController,
             obscureText: _obscurePassword,
-            onChanged: widget.onPasswordChanged,
             decoration: InputDecoration(
               hintText: textoContrasena,
               filled: true,
@@ -64,7 +90,6 @@ class _RegisterPasswordState extends State<RegisterPassword> {
           TextField(
             controller: _confirmController,
             obscureText: _obscureConfirm,
-            onChanged: widget.onConfirmPasswordChanged,
             decoration: InputDecoration(
               hintText: "Confirmar contraseña",
               filled: true,
@@ -96,3 +121,4 @@ class _RegisterPasswordState extends State<RegisterPassword> {
     );
   }
 }
+

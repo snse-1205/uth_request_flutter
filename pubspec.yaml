@@ -13,11 +13,34 @@ dependencies:
   percent_indicator: ^4.2.5
   pin_code_fields: ^8.0.1
   get: ^4.7.2
+  firebase_auth: ^5.7.0
+  cloud_firestore: ^5.6.12
+  shared_preferences: ^2.5.3
+  get_storage: ^2.1.1
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^5.0.0
+  flutter_launcher_icons: ^0.14.4
+
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/icon/logo_UTH_request.png"
+  min_sdk_android: 21
+  web:
+    generate: true
+    image_path: "assets/icon/logo_UTH_request.png"
+    background_color: "#ffffff"
+    theme_color: "#4B7756"
+  windows:
+    generate: true
+    image_path: "assets/icon/logo_UTH_request.png"
+    icon_size: 48
+  macos:
+    generate: true
+    image_path: "assets/icon/logo_UTH_request.png"
 
 flutter:
   uses-material-design: true

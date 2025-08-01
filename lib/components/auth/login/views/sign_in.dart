@@ -13,7 +13,7 @@ class LoginScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    AuthController authController = Get.put(AuthController());
+    AuthController authController = Get.find<AuthController>();
     TextEditingController _emailController = TextEditingController();
     TextEditingController _passwordController = TextEditingController();
     return SingleChildScrollView(
@@ -116,6 +116,7 @@ class LoginScreen extends StatelessWidget {
                     ..onTap = () {
                       Get.to(
                         () => FondoInicioSesion(widget_child: RegisterScreen()),
+                        transition: Transition.fadeIn,
                       );
                     },
                 ),
@@ -165,7 +166,7 @@ class LoginScreen extends StatelessWidget {
         if (error != null) {
           _showLoginError(error);
         } else {
-          Get.off(() => HomePage());
+          Get.offAll(() => HomePage(), transition: Transition.circularReveal);
           Get.snackbar(
             'Exito',
             'Inicio de sesion exitoso',

@@ -9,10 +9,10 @@ class MenuDrawer extends StatelessWidget {
   MenuDrawer({super.key});
 
   final NavigationController navController = Get.find<NavigationController>();
+  final AuthController authController = Get.find<AuthController>();
 
   @override
   Widget build(BuildContext context) {
-    AuthController authController = Get.find<AuthController>();
     return Drawer(
       backgroundColor: AppColors.onBackgroundDefault,
       child: ListView(

@@ -16,7 +16,7 @@ class RegisterScreen extends StatefulWidget {
   State<RegisterScreen> createState() => _RegisterScreenState();
 }
 
-final RegisterController registerController = Get.put(RegisterController());
+final RegisterController registerController = Get.find<RegisterController>();
 
 class _RegisterScreenState extends State<RegisterScreen> {
   final PageController _pageController = PageController();

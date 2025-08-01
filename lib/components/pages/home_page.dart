@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:uth_request_flutter_application/components/notificaciones/views/notificacionesVista.dart';
+import 'package:uth_request_flutter_application/components/peticiones/views/createRequest.dart';
 import 'package:uth_request_flutter_application/components/shared/menu_drawer.dart';
 import 'package:uth_request_flutter_application/components/shared/navigation_controller.dart';
 import 'package:uth_request_flutter_application/components/shared/peticiones_navBar.dart';
@@ -150,7 +151,9 @@ class _HomePageState extends State<HomePage> {
                         ),
                         FloatingActionButton(
                           heroTag: 'CREAR PETICION',
-                          onPressed: () {},
+                          onPressed: () {
+                            Get.to(CreateRequest(), transition: Transition.rightToLeftWithFade);
+                          },
                           backgroundColor: AppColors.primaryVariant,
                           mini: true,
                           shape: CircleBorder(),
@@ -166,9 +169,13 @@ class _HomePageState extends State<HomePage> {
                   FloatingActionButton(
                     heroTag: 'MAS',
                     onPressed: () {
-                      setState(() {
-                        showExtraButtons = !showExtraButtons;
-                      });
+                      if (navController.selectedIndex.value == 0) {
+                        Get.to(CreateRequest(), transition: Transition.rightToLeftWithFade);
+                      } else {
+                        setState(() {
+                          showExtraButtons = !showExtraButtons;
+                        });
+                      }
                     },
                     backgroundColor: AppColors.primarySecondary,
                     shape: CircleBorder(),

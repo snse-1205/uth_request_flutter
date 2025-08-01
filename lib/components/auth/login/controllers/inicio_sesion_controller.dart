@@ -45,7 +45,7 @@ class AuthController extends GetxController {
       _storage.write('carrera', estudiante.carrera);
       _storage.write('cuenta', estudiante.cuenta);
       _storage.write('rol', estudiante.rol);
-      _storage.write("logueado",true);
+      _storage.write("logueado", true);
 
       return null;
     } on FirebaseAuthException catch (e) {
@@ -60,7 +60,7 @@ class AuthController extends GetxController {
   Future<void> cerrarSesion() async {
     await _auth.signOut();
     await _storage.erase();
-    Get.off(() => FondoInicioSesion(widget_child: LoginScreen()));
+    Get.offAll(() => FondoInicioSesion(widget_child: LoginScreen()), transition: Transition.circularReveal);
   }
 
   bool estaAutenticado() {
@@ -75,7 +75,7 @@ class AuthController extends GetxController {
       campus: _storage.read('campus') ?? '',
       carrera: _storage.read('carrera') ?? '',
       cuenta: _storage.read('cuenta') ?? '',
-      rol: _storage.read('rol') ?? ''
+      rol: _storage.read('rol') ?? '',
     );
   }
 }

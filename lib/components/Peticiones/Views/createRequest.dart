@@ -21,7 +21,6 @@ class _CreateRequestState extends State<CreateRequest> {
   final List<String> requestTypes = ['APERTURA DE CLASE', 'OTRA OPCIÓN'];
   final List<String> days = ['Semana lunes-jueves', 'Fin de semana'];
 
-  // Método para seleccionar hora
   Future<void> _selectTime(BuildContext context, bool isStartTime) async {
     final TimeOfDay? picked = await showTimePicker(
       context: context,

@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:uth_request_flutter_application/components/utils/color.dart';
 
 class FondoInicioSesion extends StatelessWidget {
-  const FondoInicioSesion({super.key, required this.widget_child});
+ FondoInicioSesion({super.key, required this.widget_child});
 
-  final Widget widget_child;
+ Widget widget_child;
 
   @override
   Widget build(BuildContext context) {

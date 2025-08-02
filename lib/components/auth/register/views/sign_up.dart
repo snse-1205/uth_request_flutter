@@ -134,6 +134,41 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     ElevatedButton.icon(
                       onPressed: () async {
                         if (_currentPage == 0) {
+                          final nombre = controllersRes.nombre.value;
+                          final apellido = controllersRes.apellido.value;
+                          final correo = controllersRes.correo.value.trim();
+
+                          if (nombre.isEmpty ||
+                              apellido.isEmpty ||
+                              correo.isEmpty) {
+                            Get.snackbar(
+                              'Error por campos vacios',
+                              'Se han detectado campos vacios, llenalos antes de continuar.',
+                            );
+                            return;
+                          }
+
+                          final contieneNumeros = RegExp(r'\d');
+
+                          if (contieneNumeros.hasMatch(nombre) ||
+                              contieneNumeros.hasMatch(apellido)) {
+                            Get.snackbar(
+                              'Error de validacion',
+                              'Nombre y apellido solo deben contener letras.',
+                            );
+                            return;
+                          }
+
+                          if (!correo.contains("@uth.hn")) {
+                            Get.snackbar(
+                              'Error de validacion',
+                              'Debe ingresar su correo institucional, para validar que sea estudiante.',
+                            );
+                            return;
+                          }
+                        }
+
+                        if (_currentPage == 1) {
                           final cuenta = controllersRes.cuenta.value.trim();
 
                           if (cuenta.isEmpty) {

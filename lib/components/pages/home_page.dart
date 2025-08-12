@@ -10,7 +10,6 @@ import 'package:uth_request_flutter_application/components/shared/peticiones_nav
 import 'package:uth_request_flutter_application/components/shared/temas_navBar.dart';
 import 'package:uth_request_flutter_application/components/utils/color.dart';
 import 'package:uth_request_flutter_application/components/utils/string.dart';
-import 'package:uth_request_flutter_application/temas/views/crearTema.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -40,7 +39,7 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    obtenerDatosStorage();
+    _obtenerDatosStorage();
   }
 
   @override
@@ -128,9 +127,7 @@ class _HomePageState extends State<HomePage> {
                         ),
                         FloatingActionButton(
                           heroTag: 'CREAR TEMA',
-                          onPressed: () {
-                            Get.to(CrearTemaPage(nombre: nombre, apellido: apellido, comentario: true,), transition: Transition.rightToLeftWithFade);
-                          },
+                          onPressed: () {},
                           backgroundColor: AppColors.primaryVariant,
                           mini: true,
                           shape: CircleBorder(),
@@ -198,7 +195,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  void obtenerDatosStorage() {
+  void _obtenerDatosStorage() {
     final storage = GetStorage();
 
     setState(() {

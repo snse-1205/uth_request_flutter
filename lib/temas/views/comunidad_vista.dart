@@ -66,7 +66,7 @@ class ListaTemasPage extends StatelessWidget {
                 CardTema(
                   nombre: 'JOEL JARED BENITEZ RIOS',
                   mensaje:
-                      'Hola! Soy nuevo en la comunidad estudiantil. ¿Qué hay de nuevo??',
+                      'Hola! Soy nuevo en la comunidad estudiantil. ¿Que hay de nuevo??',
                   tiempo: '3d',
                   likes: 23,
                   comentarios: 4,
@@ -79,7 +79,7 @@ class ListaTemasPage extends StatelessWidget {
                 CardTema(
                   nombre: 'STACY NICOLE SAUCEDA ESPINOZA',
                   mensaje:
-                      'Que aplicación más hermosa bella divina guapa... Vamos a ver si funciona al final :)...',
+                      'Que aplicacion mas hermosa bella divina guapa... Vamos a ver si funciona al final :\')...',
                   tiempo: '6d',
                   likes: 23,
                   comentarios: 2,

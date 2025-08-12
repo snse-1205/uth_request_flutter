@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:uth_request_flutter_application/components/auth/login/controllers/inicio_sesion_controller.dart';
 import 'package:uth_request_flutter_application/components/shared/navigation_controller.dart';
 import 'package:uth_request_flutter_application/components/utils/color.dart';
@@ -63,6 +64,14 @@ class MenuDrawer extends StatelessWidget {
             selected: navController.selectedIndex.value == 2,
             onTap: () {
               navController.changePage(2);
+              Navigator.pop(context);
+            },
+          ),
+          if(GetStorage().read('rol').toLowerCase() == "administrador") ListTile(
+            leading: Icon(Icons.manage_accounts),
+            title: Text("Administrar Usuarios"),
+            onTap: () {
+              navController.changePage(3);
               Navigator.pop(context);
             },
           ),

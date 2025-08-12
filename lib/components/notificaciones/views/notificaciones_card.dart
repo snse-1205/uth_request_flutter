@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:uth_request_flutter_application/components/notificaciones/modelo/notificaciones_model.dart';
 import 'package:uth_request_flutter_application/components/utils/color.dart';
+import 'package:uth_request_flutter_application/components/utils/notificaciones.dart';
 
 class NotificacionesCard extends StatelessWidget {
   final NotificacionesModel notificacion;
 
   const NotificacionesCard({super.key, required this.notificacion});
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +51,18 @@ class NotificacionesCard extends StatelessWidget {
                     SizedBox(
                       width: 100,
                       child: ElevatedButton(
-                        onPressed: () {},
+                        onPressed: () async {
+                          final token = "dCtJuvHGSAqfIaIwwMYBUX:APA91bGQ7BW8AEsn1Vj4fzOEkNU6gpBm_yMT_eaYQ2O76SfCmnUBvOLEqKTQzGIX923L5idw-1ObvQEBWr_QIvAcCs6YZenjcMNRsDI-KFe-481_BI69L5U";
+
+                          debugPrint("TOKEN A ENVIAR: $token");
+                          await Notificaciones().enviarNotificacion(
+                            fcmtoken:
+                                token,
+                            title: "Notificaciones de prueba",
+                            body: "Este es el cuerpo de la notificacion",
+                            
+                          );
+                        },
                         style: ButtonStyle(
                           foregroundColor: WidgetStateProperty.all<Color>(
                             AppColors.onSurface,

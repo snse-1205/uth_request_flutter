@@ -14,8 +14,8 @@ class LoginScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     AuthController authController = Get.find<AuthController>();
-    TextEditingController _emailController = TextEditingController();
-    TextEditingController _passwordController = TextEditingController();
+    TextEditingController emailController = TextEditingController();
+    TextEditingController passwordController = TextEditingController();
     return SingleChildScrollView(
       padding: EdgeInsets.symmetric(horizontal: 32),
       child: Column(
@@ -24,7 +24,7 @@ class LoginScreen extends StatelessWidget {
           Image.asset('assets/logo_UTH_verde.png', height: 100),
           SizedBox(height: 16),
           TextField(
-            controller: _emailController,
+            controller: emailController,
             keyboardType: TextInputType.emailAddress,
             textInputAction: TextInputAction.next,
             decoration: InputDecoration(
@@ -49,7 +49,7 @@ class LoginScreen extends StatelessWidget {
           SizedBox(height: 16),
 
           TextField(
-            controller: _passwordController,
+            controller: passwordController,
             textInputAction: TextInputAction.done,
             obscureText: true,
             decoration: InputDecoration(
@@ -82,8 +82,8 @@ class LoginScreen extends StatelessWidget {
                 child: ElevatedButton(
                   onPressed: () {
                     _signInSuccess(
-                      _emailController.text,
-                      _passwordController.text,
+                      emailController.text,
+                      passwordController.text,
                     );
                   },
                   style: ElevatedButton.styleFrom(

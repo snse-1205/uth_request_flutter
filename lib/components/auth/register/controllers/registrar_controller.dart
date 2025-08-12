@@ -22,6 +22,7 @@ class RegisterController extends GetxController{
 
       await _firestore.collection('estudiantes').doc(uid).set(estudiante.toMap());
 
+
       return null;
     } on FirebaseAuthException catch (e) {
       return e.message;

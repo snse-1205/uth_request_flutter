@@ -1,3 +1,4 @@
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
@@ -5,6 +6,7 @@ import 'package:get_storage/get_storage.dart';
 import 'package:uth_request_flutter_application/components/auth/login/views/sign_in.dart';
 import 'package:uth_request_flutter_application/components/pages/fondo_inicio_sesion.dart';
 import 'package:uth_request_flutter_application/components/auth/register/models/estudiantes_models.dart';
+import 'package:uth_request_flutter_application/components/utils/notificaciones.dart';
 
 class AuthController extends GetxController {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -36,6 +38,12 @@ class AuthController extends GetxController {
       if (!doc.exists) return "No se encontró la información del estudiante";
 
       final estudiante = EstudianteModel.fromMap(doc.data()!);
+      String token = '';
+      Notificaciones().guardarToken(uid);
+     
+      
+      
+      
 
       _storage.write('uid', uid);
       _storage.write('correo', estudiante.correo);
@@ -46,6 +54,7 @@ class AuthController extends GetxController {
       _storage.write('cuenta', estudiante.cuenta);
       _storage.write('rol', estudiante.rol);
       _storage.write("logueado", true);
+     
 
       return null;
     } on FirebaseAuthException catch (e) {
@@ -58,6 +67,7 @@ class AuthController extends GetxController {
   }
 
   Future<void> cerrarSesion() async {
+    Notificaciones().eliminarToken(_storage.read('uid'));
     await _auth.signOut();
     await _storage.erase();
     Get.offAll(() => FondoInicioSesion(widget_child: LoginScreen()), transition: Transition.circularReveal);
@@ -78,4 +88,6 @@ class AuthController extends GetxController {
       rol: _storage.read('rol') ?? '',
     );
   }
+
+
 }

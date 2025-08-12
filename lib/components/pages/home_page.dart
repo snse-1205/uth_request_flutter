@@ -12,7 +12,6 @@ import 'package:uth_request_flutter_application/components/usuarios/views/create
 import 'package:uth_request_flutter_application/components/usuarios/views/usuarios_page.dart';
 import 'package:uth_request_flutter_application/components/utils/color.dart';
 import 'package:uth_request_flutter_application/components/utils/string.dart';
-import 'package:uth_request_flutter_application/temas/views/crearTema.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -38,7 +37,7 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    obtenerDatosStorage();
+    _obtenerDatosStorage();
   }
 
   @override
@@ -139,6 +138,7 @@ class _HomePageState extends State<HomePage> {
                         ),
                         FloatingActionButton(
                           heroTag: 'CREAR TEMA',
+<<<<<<< HEAD
                           onPressed: () {
                             Get.to(
                               CrearTemaPage(
@@ -147,6 +147,9 @@ class _HomePageState extends State<HomePage> {
                               transition: Transition.rightToLeftWithFade,
                             );
                           },
+=======
+                          onPressed: () {},
+>>>>>>> b4e4eea (Revert "Vista para la comunidad con la card del post")
                           backgroundColor: AppColors.primaryVariant,
                           mini: true,
                           shape: CircleBorder(),
@@ -227,7 +230,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  void obtenerDatosStorage() {
+  void _obtenerDatosStorage() {
     final storage = GetStorage();
 
     setState(() {

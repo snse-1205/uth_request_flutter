@@ -12,7 +12,6 @@ import 'package:uth_request_flutter_application/components/usuarios/views/create
 import 'package:uth_request_flutter_application/components/usuarios/views/usuarios_page.dart';
 import 'package:uth_request_flutter_application/components/utils/color.dart';
 import 'package:uth_request_flutter_application/components/utils/string.dart';
-import 'package:uth_request_flutter_application/temas/views/crearTema.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -220,7 +219,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  void _obtenerDatosStorage() {
+  void obtenerDatosStorage() {
     final storage = GetStorage();
 
     setState(() {

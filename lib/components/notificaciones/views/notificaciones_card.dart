@@ -12,6 +12,7 @@ class NotificacionesCard extends StatelessWidget {
     return Card(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       margin: EdgeInsets.all(12),
+      color: AppColors.onSurface,
       child: Padding(
         padding: EdgeInsetsGeometry.all(15),
         child: Column(

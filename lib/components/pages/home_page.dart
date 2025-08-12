@@ -8,6 +8,8 @@ import 'package:uth_request_flutter_application/components/shared/menu_drawer.da
 import 'package:uth_request_flutter_application/components/shared/navigation_controller.dart';
 import 'package:uth_request_flutter_application/components/shared/peticiones_navBar.dart';
 import 'package:uth_request_flutter_application/components/shared/temas_navBar.dart';
+import 'package:uth_request_flutter_application/components/usuarios/views/create_user_page.dart';
+import 'package:uth_request_flutter_application/components/usuarios/views/usuarios_page.dart';
 import 'package:uth_request_flutter_application/components/utils/color.dart';
 import 'package:uth_request_flutter_application/components/utils/string.dart';
 import 'package:uth_request_flutter_application/temas/views/crearTema.dart';
@@ -31,11 +33,7 @@ class _HomePageState extends State<HomePage> {
   String cuenta = '';
   String rol = '';
 
-  final List<Widget> paginas = [
-    PeticionesPage(),
-    TemasPage(),
-    Notificacionesvista(),
-  ];
+  late List<Widget> paginas;
 
   @override
   void initState() {
@@ -45,6 +43,12 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    paginas = [PeticionesPage(), TemasPage(), Notificacionesvista()];
+
+    if (rol.toLowerCase() == "administrador") {
+      paginas.add(UsuariosPage());
+    }
+
     return Obx(
       () => Scaffold(
         appBar: AppBar(
@@ -101,6 +105,12 @@ class _HomePageState extends State<HomePage> {
               activeIcon: Icon(Icons.campaign),
               label: anuncios,
             ),
+            if (rol.toLowerCase() == "administrador")
+              BottomNavigationBarItem(
+                icon: Icon(Icons.manage_accounts_outlined),
+                activeIcon: Icon(Icons.manage_accounts),
+                label: "Usuarios",
+              ),
           ],
 
           onTap: navController.changePage,
@@ -129,7 +139,14 @@ class _HomePageState extends State<HomePage> {
                         FloatingActionButton(
                           heroTag: 'CREAR TEMA',
                           onPressed: () {
-                            Get.to(CrearTemaPage(nombre: nombre, apellido: apellido, comentario: true,), transition: Transition.rightToLeftWithFade);
+                            Get.to(
+                              CrearTemaPage(
+                                nombre: nombre,
+                                apellido: apellido,
+                                comentario: true,
+                              ),
+                              transition: Transition.rightToLeftWithFade,
+                            );
                           },
                           backgroundColor: AppColors.primaryVariant,
                           mini: true,
@@ -155,7 +172,10 @@ class _HomePageState extends State<HomePage> {
                         FloatingActionButton(
                           heroTag: 'CREAR PETICION',
                           onPressed: () {
-                            Get.to(CreateRequest(), transition: Transition.rightToLeftWithFade);
+                            Get.to(
+                              CreateRequest(),
+                              transition: Transition.rightToLeftWithFade,
+                            );
                           },
                           backgroundColor: AppColors.primaryVariant,
                           mini: true,
@@ -173,7 +193,17 @@ class _HomePageState extends State<HomePage> {
                     heroTag: 'MAS',
                     onPressed: () {
                       if (navController.selectedIndex.value == 0) {
-                        Get.to(CreateRequest(), transition: Transition.rightToLeftWithFade);
+                        Get.to(
+                          CreateRequest(),
+                          transition: Transition.rightToLeftWithFade,
+                        );
+                      }
+                      if (rol.toLowerCase() == "administrador" &&
+                          navController.selectedIndex.value == 3) {
+                        Get.to(
+                          CreateUserPage(),
+                          transition: Transition.rightToLeft,
+                        );
                       } else {
                         setState(() {
                           showExtraButtons = !showExtraButtons;

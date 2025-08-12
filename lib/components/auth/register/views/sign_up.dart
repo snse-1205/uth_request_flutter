@@ -307,6 +307,14 @@ Future<void> _registroEstudiante(
     return;
   }
 
+  showDialog(
+    context: context,
+    barrierDismissible: false, // evita que se cierre tocando afuera
+    builder: (_) => Center(
+      child: CircularProgressIndicator(color: AppColors.primary),
+    ),
+  );
+
   final estudiante = EstudianteModel(
     nombre: nombre,
     apellido: apellido,
@@ -323,6 +331,8 @@ Future<void> _registroEstudiante(
     contrasena: contrasena,
     estudiante: estudiante,
   );
+
+  Navigator.of(context).pop();
 
   if (error == null) {
     showDialog(

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:uth_request_flutter_application/components/Peticiones/Views/SubjectSelectionScreen.dart';
+import 'package:uth_request_flutter_application/components/Peticiones/Views/subjectSelectionScreen.dart';
 import 'package:uth_request_flutter_application/components/utils/string.dart';
 import 'package:uth_request_flutter_application/components/utils/color.dart';
 

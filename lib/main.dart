@@ -9,6 +9,7 @@ import 'package:uth_request_flutter_application/components/auth/register/control
 import 'package:uth_request_flutter_application/components/pages/fondo_inicio_sesion.dart';
 import 'package:uth_request_flutter_application/components/pages/home_page.dart';
 import 'package:uth_request_flutter_application/components/utils/color.dart';
+import 'package:uth_request_flutter_application/components/utils/notificaciones.dart';
 
 
 void main() async {
@@ -31,14 +32,17 @@ void main() async {
 class MainApp extends StatelessWidget {
   MainApp({super.key});
   final storage = GetStorage();
+  
 
   @override
   Widget build(BuildContext context) {
 
     void mostrarMensaje(){}
 
-
+    Notificaciones().guardarToken(storage.read('uid'));
     final hayData = storage.read("logueado") ?? false;
+    
+    
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       home: hayData

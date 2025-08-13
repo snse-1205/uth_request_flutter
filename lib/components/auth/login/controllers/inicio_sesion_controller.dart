@@ -39,7 +39,7 @@ class AuthController extends GetxController {
 
       final estudiante = EstudianteModel.fromMap(doc.data()!);
       String token = '';
-      Notificaciones().guardarToken(uid);
+      //Notificaciones().guardarToken(uid);
      
       
       

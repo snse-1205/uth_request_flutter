@@ -53,11 +53,16 @@ class NotificacionesCard extends StatelessWidget {
                       child: ElevatedButton(
                         onPressed: () async {
                           final token = "dCtJuvHGSAqfIaIwwMYBUX:APA91bGQ7BW8AEsn1Vj4fzOEkNU6gpBm_yMT_eaYQ2O76SfCmnUBvOLEqKTQzGIX923L5idw-1ObvQEBWr_QIvAcCs6YZenjcMNRsDI-KFe-481_BI69L5U";
+                          String uid = "Qxb2WCPZ5qVWjkaKFFSyW4bUPje2";
+                          List<String> uids = [];
+                          uids.add(uid);
+                          uids.add("fdY17JPDEtMK0ockMtSBKIp2RWc2");
+
 
                           debugPrint("TOKEN A ENVIAR: $token");
-                          await Notificaciones().enviarNotificacion(
-                            fcmtoken:
-                                token,
+                          await Notificaciones().multicastNotificaciones(
+                            uids:
+                                uids,
                             title: "Notificaciones de prueba",
                             body: "Este es el cuerpo de la notificacion",
                             

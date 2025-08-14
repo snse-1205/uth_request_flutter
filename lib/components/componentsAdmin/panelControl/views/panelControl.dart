@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:uth_request_flutter_application/components/componentsAdmin/catalogos/Views/crudClases.dart';
 import 'package:uth_request_flutter_application/components/componentsAdmin/catalogos/views/crudCampus.dart';
 import 'package:uth_request_flutter_application/components/componentsAdmin/catalogos/views/crudCarreras.dart';
 import 'package:uth_request_flutter_application/components/utils/color.dart'; // 👈 para navegación con GetX
@@ -49,7 +50,7 @@ class _PanelControlState extends State<PanelControl> {
     _PanelItem(
       label: 'Clases',
       icon: Icons.class_,
-      onTap: () => Get.to(() => const ClasesPage()),
+      onTap: () => Get.to(() => const CrudClases()),
     ),
     _PanelItem(
       label: 'Ajustes',

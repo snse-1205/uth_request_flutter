@@ -115,7 +115,7 @@ class _HomePageState extends State<HomePage> {
 
           onTap: navController.changePage,
         ),
-        floatingActionButton: navController.selectedIndex.value == 2
+        floatingActionButton: navController.selectedIndex.value == 2 || navController.selectedIndex.value == 3
             ? null
             : Column(
                 mainAxisSize: MainAxisSize.min,
@@ -138,8 +138,10 @@ class _HomePageState extends State<HomePage> {
                         ),
                         FloatingActionButton(
                           heroTag: 'CREAR TEMA',
-                          
                           onPressed: () {
+                            Get.to(
+                            {}
+                            );
                           },
                           backgroundColor: AppColors.primaryVariant,
                           mini: true,
@@ -182,6 +184,32 @@ class _HomePageState extends State<HomePage> {
                     ),
                     SizedBox(height: 10),
                   ],
+                  FloatingActionButton(
+                    heroTag: 'MAS',
+                    onPressed: () {
+                      if (navController.selectedIndex.value == 0) {
+                        Get.to(
+                          CreateRequest(),
+                          transition: Transition.rightToLeftWithFade,
+                        );
+                      } else {
+                        setState(() {
+                          showExtraButtons = !showExtraButtons;
+                        });
+                      }
+                    },
+                    backgroundColor: AppColors.primarySecondary,
+                    shape: CircleBorder(),
+                    child: navController.selectedIndex.value == 0
+                        ? Icon(
+                            Icons.list_alt_outlined,
+                            color: AppColors.onSurface,
+                          )
+                        : Icon(
+                            showExtraButtons ? Icons.close : Icons.add,
+                            color: AppColors.onSurface,
+                          ),
+                  ),
                 ],
               ),
       ),

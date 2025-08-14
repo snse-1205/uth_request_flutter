@@ -1,17 +1,45 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:uth_request_flutter_application/components/utils/color.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:uth_request_flutter_application/temas/controllers/temas_controller.dart';
+import 'package:uth_request_flutter_application/temas/models/post_model.dart';
 
 class CrearTemaPage extends StatelessWidget {
-  const CrearTemaPage({
+  CrearTemaPage({
     super.key,
-    required this.nombre,
-    required this.apellido,
     required this.comentario,
   });
-  final String nombre;
-  final String apellido;
+
   final bool comentario;
+  final TextEditingController mensajeController = TextEditingController();
+  final PostController postController = Get.find();
+
+  Future<void> publicarTema() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) {
+      Get.snackbar('Error', 'Debes iniciar sesion para publicar');
+      return;
+    }
+
+    final post = PostModel(
+      id: '',
+      uid: user.uid,
+      mensaje: mensajeController.text,
+      carrera: '',
+      nombre: '',
+      verificado: false,
+      likes: [],
+      comentarios: 0,
+      principal: true,
+      comentario: false,
+      fechaCreacion: DateTime.now().toIso8601String(),
+      tiempo: 'Ahora',
+    );
+
+    await postController.addPost(post);
+    Get.back();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,24 +54,8 @@ class CrearTemaPage extends StatelessWidget {
         ),
         actions: [
           TextButton(
-            onPressed: () {
-              if (comentario) {
-                Get.snackbar(
-                  'Comentario creado',
-                  'Aquí iría la accion de comentario por tema.',
-                );
-              } else {
-                Get.snackbar(
-                  'Tema creado',
-                  'Aquí iría la accion de publicar tema.',
-                );
-              }
-            },
-
-            child: Text(
-              'Publicar',
-              style: TextStyle(color: AppColors.onHighlightText),
-            ),
+            onPressed: publicarTema,
+            child: Text('Publicar', style: TextStyle(color: AppColors.onHighlightText)),
           ),
         ],
       ),
@@ -53,46 +65,13 @@ class CrearTemaPage extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            Row(
-              children: [
-                CircleAvatar(
-                  radius: 20,
-                  backgroundColor: AppColors.nonSelectedItem,
-                  child: Icon(Icons.person_2, color: AppColors.primary),
-                ),
-                SizedBox(width: 10),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Text(
-                        '$nombre $apellido',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
-                          color: AppColors.primaryVariant,
-                        ),
-                      ),
-                      Text(
-                        "Usa internet con respeto: sigue las netiquetas",
-                        style: TextStyle(color: AppColors.onSecondaryText),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(height: 20),
-            Expanded(
-              child: TextField(
-                maxLines: null,
-                expands: true,
-                keyboardType: TextInputType.multiline,
-                decoration: InputDecoration(
-                  hintText: comentario ? "Comenta..." : '¿Que esta pasando?',
-                  border: InputBorder.none,
-                ),
+            TextField(
+              controller: mensajeController,
+              maxLines: null,
+              keyboardType: TextInputType.multiline,
+              decoration: InputDecoration(
+                hintText: comentario ? "Comenta..." : '¿Qué está pasando?',
+                border: InputBorder.none,
               ),
             ),
           ],

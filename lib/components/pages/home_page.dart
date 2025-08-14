@@ -220,7 +220,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  void obtenerDatosStorage() {
+  void _obtenerDatosStorage() {
     final storage = GetStorage();
 
     setState(() {

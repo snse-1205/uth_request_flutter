@@ -61,44 +61,49 @@ class ListaTemasPage extends StatelessWidget {
 
           // Lista de temas en tiempo real
           Expanded(
-            child: Obx(() {
-              if (postController.isLoading.value) {
-                return Center(child: CircularProgressIndicator());
-              }
-
-              if (postController.posts.isEmpty) {
-                return Center(child: Text('No hay temas aún'));
-              }
-
-              return ListView.builder(
-                itemCount: postController.posts.length,
-                itemBuilder: (context, index) {
-                  final post = postController.posts[index];
-
-                  return StreamBuilder<int>(
-                    stream: postController.getLikesCount(
-                      post.id,
-                    ),
-                    builder: (context, snapshot) {
-                      final count = snapshot.data ?? 0;
-
-                      return CardTema(
-                        postId: post.id,
-                        nombre: post.nombre,
-                        mensaje: post.mensaje,
-                        tiempo: post.tiempo,
-                        comentarios: post.comentarios,
-                        principal: post.principal,
-                        comentario: post.comentario,
-                        fechaCreacion: post.fechaCreacion,
-                        verificado: post.verificado,
-                        carrera: post.carrera,
-                      );
-                    },
-                  );
-                },
-              );
-            }),
+            child: ListView(
+              children: [
+                CardTema(
+                  nombre: 'JOEL JARED BENITEZ RIOS',
+                  mensaje:
+                      'Hola! Soy nuevo en la comunidad estudiantil. ¿Qué hay de nuevo??',
+                  tiempo: '3d',
+                  likes: 23,
+                  comentarios: 4,
+                  principal: false,
+                  comentario: false,
+                  fechaCreacion: '00/00/0000 00:00',
+                  verificado: true,
+                  carrera: 'Estudiante de Ingenieria en Computacion',
+                ),
+                CardTema(
+                  nombre: 'STACY NICOLE SAUCEDA ESPINOZA',
+                  mensaje:
+                      'Que aplicación más hermosa bella divina guapa... Vamos a ver si funciona al final :)...',
+                  tiempo: '6d',
+                  likes: 23,
+                  comentarios: 2,
+                  principal: true,
+                  comentario: false,
+                  fechaCreacion: '00/00/0000 00:00',
+                  verificado: false,
+                  carrera: 'Estudiante de Ingenieria Industrial',
+                ),
+                CardTema(
+                  nombre: 'STACY NICOLE SAUCEDA ESPINOZA',
+                  mensaje:
+                      'Holis',
+                  tiempo: '6d',
+                  likes: 23,
+                  comentarios: 2,
+                  principal: true,
+                  comentario: false,
+                  fechaCreacion: '00/00/0000 00:00',
+                  verificado: false,
+                  carrera: 'Estudiante de Ingenieria Industrial',
+                ),
+              ],
+            ),
           ),
         ],
       ),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:uth_request_flutter_application/components/componentsAdmin/panelControl/views/panelControl.dart';
 import 'package:uth_request_flutter_application/components/notificaciones/views/notificacionesVista.dart';
 import 'package:uth_request_flutter_application/components/peticiones/views/createRequest.dart';
 import 'package:uth_request_flutter_application/components/shared/menu_drawer.dart';
@@ -45,7 +46,7 @@ class _HomePageState extends State<HomePage> {
     paginas = [PeticionesPage(), TemasPage(), Notificacionesvista()];
 
     if (rol.toLowerCase() == "administrador") {
-      paginas.add(UsuariosPage());
+      paginas.add(PanelControl());
     }
 
     return Obx(
@@ -107,15 +108,15 @@ class _HomePageState extends State<HomePage> {
             ),
             if (rol.toLowerCase() == "administrador")
               BottomNavigationBarItem(
-                icon: Icon(Icons.manage_accounts_outlined),
-                activeIcon: Icon(Icons.manage_accounts),
-                label: "Usuarios",
+                icon: Icon(Icons.admin_panel_settings_outlined),
+                activeIcon: Icon(Icons.admin_panel_settings),
+                label: "Gestiones",
               ),
           ],
 
           onTap: navController.changePage,
         ),
-        floatingActionButton: navController.selectedIndex.value == 2
+        floatingActionButton: navController.selectedIndex.value == 2 || navController.selectedIndex.value == 3
             ? null
             : Column(
                 mainAxisSize: MainAxisSize.min,
@@ -194,13 +195,6 @@ class _HomePageState extends State<HomePage> {
                         Get.to(
                           CreateRequest(),
                           transition: Transition.rightToLeftWithFade,
-                        );
-                      }
-                      if (rol.toLowerCase() == "administrador" &&
-                          navController.selectedIndex.value == 3) {
-                        Get.to(
-                          CreateUserPage(),
-                          transition: Transition.rightToLeft,
                         );
                       } else {
                         setState(() {

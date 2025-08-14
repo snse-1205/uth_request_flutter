@@ -83,6 +83,7 @@ class _HomePageState extends State<HomePage> {
         drawer: MenuDrawer(),
 
         bottomNavigationBar: BottomNavigationBar(
+          type: BottomNavigationBarType.fixed,
           backgroundColor: AppColors.primary,
           selectedItemColor: AppColors.selectedItem,
           unselectedItemColor: AppColors.nonSelectedItem,
@@ -141,8 +142,6 @@ class _HomePageState extends State<HomePage> {
                           onPressed: () {
                             Get.to(
                               CrearTemaPage(
-                                nombre: nombre,
-                                apellido: apellido,
                                 comentario: true,
                               ),
                               transition: Transition.rightToLeftWithFade,

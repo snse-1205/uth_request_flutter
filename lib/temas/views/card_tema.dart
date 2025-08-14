@@ -1,27 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:uth_request_flutter_application/components/utils/color.dart';
-import 'package:uth_request_flutter_application/temas/views/crearTema.dart';
+import 'package:uth_request_flutter_application/temas/controllers/temas_controller.dart';
+import 'package:uth_request_flutter_application/temas/views/comentarios_view.dart';
 
-class CardTema extends StatefulWidget {
-  const CardTema({
-    super.key,
-    required this.nombre,
-    required this.mensaje,
-    required this.tiempo,
-    required this.likes,
-    required this.comentarios,
-    required this.principal,
-    required this.comentario,
-    required this.fechaCreacion,
-    required this.verificado,
-    required this.carrera,
-  });
-
+class CardTema extends StatelessWidget {
+  final String postId;
   final String nombre;
   final String mensaje;
   final String tiempo;
-  final int likes;
   final int comentarios;
   final bool principal;
   final bool comentario;
@@ -29,26 +16,21 @@ class CardTema extends StatefulWidget {
   final String fechaCreacion;
   final String carrera;
 
-  @override
-  State<CardTema> createState() => _CardTemaState();
-}
+  CardTema({
+    super.key,
+    required this.postId,
+    required this.nombre,
+    required this.mensaje,
+    required this.tiempo,
+    required this.comentarios,
+    required this.principal,
+    required this.comentario,
+    required this.verificado,
+    required this.fechaCreacion,
+    required this.carrera,
+  });
 
-class _CardTemaState extends State<CardTema> {
-  late int likeCount;
-  bool isLiked = false;
-
-  @override
-  void initState() {
-    super.initState();
-    likeCount = widget.likes;
-  }
-
-  void toggleLike() {
-    setState(() {
-      isLiked = !isLiked;
-      likeCount += isLiked ? 1 : -1;
-    });
-  }
+  final PostController postController = Get.find();
 
   @override
   Widget build(BuildContext context) {
@@ -61,6 +43,7 @@ class _CardTemaState extends State<CardTema> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // --- Cabecera con nombre y fecha ---
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -78,7 +61,7 @@ class _CardTemaState extends State<CardTema> {
                         children: [
                           Flexible(
                             child: Text(
-                              widget.nombre,
+                              nombre,
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 fontSize: 15,
@@ -86,7 +69,7 @@ class _CardTemaState extends State<CardTema> {
                             ),
                           ),
                           SizedBox(width: 4),
-                          if (widget.verificado)
+                          if (verificado)
                             Icon(
                               Icons.verified,
                               color: AppColors.onHighlightText,
@@ -96,7 +79,7 @@ class _CardTemaState extends State<CardTema> {
                       ),
                       SizedBox(height: 2),
                       Text(
-                        widget.carrera,
+                        carrera,
                         style: TextStyle(
                           fontSize: 12,
                           color: AppColors.primary,
@@ -107,7 +90,7 @@ class _CardTemaState extends State<CardTema> {
                 ),
                 SizedBox(width: 8),
                 Text(
-                  widget.tiempo,
+                  tiempo,
                   style: TextStyle(
                     color: AppColors.onSecondaryText,
                     fontSize: 12,
@@ -118,48 +101,72 @@ class _CardTemaState extends State<CardTema> {
 
             SizedBox(height: 10),
 
-            // Mensaje
-            Text(widget.mensaje, style: TextStyle(fontSize: 15)),
+            // --- Mensaje ---
+            Text(mensaje, style: TextStyle(fontSize: 15)),
 
             SizedBox(height: 10),
 
-            // Fecha de creacion
-            widget.principal
-                ? Text(
-                    widget.fechaCreacion,
-                    style: TextStyle(
-                      color: AppColors.onSecondaryText,
-                      fontSize: 12,
-                    ),
-                  )
-                : SizedBox(height: 2),
+            // --- Fecha ---
+            if (principal)
+              Text(
+                fechaCreacion,
+                style: TextStyle(
+                  color: AppColors.onSecondaryText,
+                  fontSize: 12,
+                ),
+              ),
 
             SizedBox(height: 8),
 
-            // Reacciones
+            // --- Reacciones ---
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                GestureDetector(
-                  onTap: toggleLike,
-                  child: Icon(
-                    isLiked ? Icons.thumb_up_alt : Icons.thumb_up_alt_outlined,
-                    size: 22,
-                    color: isLiked
-                        ? AppColors.onHighlightText
-                        : AppColors.onSecondaryText,
-                  ),
+                // Contador de likes
+                StreamBuilder<int>(
+                  stream: postController.getLikesCount(postId),
+                  builder: (context, snapshot) {
+                    final count = snapshot.data ?? 0;
+                    return Text('$count');
+                  },
                 ),
-                SizedBox(width: 4),
-                Text('$likeCount'),
+                SizedBox(width: 8),
+
+                // Boton de like
+                StreamBuilder<bool>(
+                  stream: postController.hasLiked(postId),
+                  builder: (context, snapshot) {
+                    final hasLiked = snapshot.data ?? false;
+                    return IconButton(
+                      icon: Icon(
+                        hasLiked ? Icons.thumb_up : Icons.thumb_up,
+                        color: hasLiked
+                            ? AppColors.onHighlightText
+                            : AppColors.onSecondaryText,
+                      ),
+                      onPressed: () => postController.toggleLike(postId),
+                    );
+                  },
+                ),
+
                 SizedBox(width: 16),
+
+                // Boton de comentarios
                 GestureDetector(
                   onTap: () {
                     Get.to(
-                      () => CrearTemaPage(
-                        nombre: 'nombre',
-                        apellido: 'apellido',
-                        comentario: true,
+                      () => PostDetailPage(
+                        postId: postId,
+                        nombre: nombre,
+                        mensaje: mensaje,
+                        tiempo: tiempo,
+                        likes: 0,
+                        comentarios: comentarios,
+                        principal: principal,
+                        comentario: comentario,
+                        verificado: verificado,
+                        fechaCreacion: fechaCreacion,
+                        carrera: carrera,
                       ),
                       transition: Transition.downToUp,
                     );
@@ -171,7 +178,7 @@ class _CardTemaState extends State<CardTema> {
                   ),
                 ),
                 SizedBox(width: 4),
-                Text('${widget.comentarios}'),
+                Text('$comentarios'),
               ],
             ),
           ],

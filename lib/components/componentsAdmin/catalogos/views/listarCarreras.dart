@@ -1,19 +1,19 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:uth_request_flutter_application/components/componentsAdmin/catalogos/controllers/carrerasController.dart';
+import 'package:uth_request_flutter_application/components/componentsAdmin/catalogos/models/carrerasModel.dart';
 import 'package:uth_request_flutter_application/components/utils/color.dart';
 
 class ListarCarrerasTab extends StatelessWidget {
-  const ListarCarrerasTab({super.key});
+  ListarCarrerasTab({super.key});
+
+  final CarreraController _controller = CarreraController();
 
   @override
   Widget build(BuildContext context) {
     return ColoredBox(
       color: AppColors.onBackgroundDefault,
-      child: StreamBuilder<QuerySnapshot>(
-        stream: FirebaseFirestore.instance
-            .collection('Carreras')
-            .orderBy('dateCreate', descending: true)
-            .snapshots(),
+      child: StreamBuilder<List<Carrera>>(
+        stream: _controller.streamAll(),
         builder: (context, snapshot) {
           if (snapshot.hasError) {
             return const Center(
@@ -35,20 +35,17 @@ class ListarCarrerasTab extends StatelessWidget {
             );
           }
 
-          final docs = snapshot.data!.docs;
-          if (docs.isEmpty) {
+          final items = snapshot.data!;
+          if (items.isEmpty) {
             return const _EmptyStateCarreras();
           }
 
           return ListView.separated(
             padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
-            itemCount: docs.length,
+            itemCount: items.length,
             separatorBuilder: (_, __) => const SizedBox(height: 8),
             itemBuilder: (context, index) {
-              final doc = docs[index];
-              final data = doc.data() as Map<String, dynamic>? ?? {};
-              final nombre = (data['nombre'] as String?)?.trim() ?? '';
-              final id = doc.id;
+              final c = items[index];
 
               return Card(
                 color: AppColors.onSurface,
@@ -63,18 +60,17 @@ class ListarCarrerasTab extends StatelessWidget {
                     child: Icon(Icons.menu_book, color: AppColors.primary),
                   ),
                   title: Text(
-                    nombre.isNotEmpty ? nombre : id,
+                    c.nombre.isNotEmpty ? c.nombre : c.id,
                     style: const TextStyle(
                       color: AppColors.onPrimaryText,
                       fontWeight: FontWeight.w700,
                     ),
                   ),
                   subtitle: Text(
-                    'ID: $id',
+                    'ID: ${c.id}',
                     style: const TextStyle(color: AppColors.onSecondaryText),
                   ),
-                  trailing: const Icon(Icons.chevron_right,
-                      color: AppColors.onSecondaryText),
+                  trailing: const Icon(Icons.chevron_right, color: AppColors.onSecondaryText),
                   onTap: () {
                     // futuro: navegar a detalle/editar carrera
                   },
@@ -99,8 +95,7 @@ class _EmptyStateCarreras extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(Icons.menu_book_outlined,
-                size: 48, color: AppColors.onTertiaryText),
+            Icon(Icons.menu_book_outlined, size: 48, color: AppColors.onTertiaryText),
             SizedBox(height: 10),
             Text(
               'No hay carreras registradas',

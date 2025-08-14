@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:uth_request_flutter_application/components/componentsAdmin/catalogos/controllers/carrerasController.dart';
 import 'package:uth_request_flutter_application/components/utils/alerts.dart';
 import 'package:uth_request_flutter_application/components/utils/color.dart';
+
 
 class AgregarCarreraTab extends StatefulWidget {
   const AgregarCarreraTab({super.key});
@@ -11,9 +12,11 @@ class AgregarCarreraTab extends StatefulWidget {
 }
 
 class _AgregarCarreraTabState extends State<AgregarCarreraTab> {
-  final TextEditingController _nombreCarreraController =
-      TextEditingController();
+  final TextEditingController _nombreCarreraController = TextEditingController();
   final TextEditingController _idCarreraController = TextEditingController();
+  final CarreraController _controller = CarreraController();
+
+  bool _saving = false;
 
   @override
   void dispose() {
@@ -22,35 +25,16 @@ class _AgregarCarreraTabState extends State<AgregarCarreraTab> {
     super.dispose();
   }
 
-  // slug simple desde el nombre
+  // slug simple desde el nombre (igual que tu versión)
   String _generarIdDesdeNombre(String input) {
     String s = input.trim().toLowerCase();
     const Map<String, String> acentos = {
-      'á': 'a',
-      'ä': 'a',
-      'à': 'a',
-      'â': 'a',
-      'ã': 'a',
-      'å': 'a',
-      'é': 'e',
-      'è': 'e',
-      'ê': 'e',
-      'ë': 'e',
-      'í': 'i',
-      'ì': 'i',
-      'î': 'i',
-      'ï': 'i',
-      'ó': 'o',
-      'ò': 'o',
-      'ô': 'o',
-      'ö': 'o',
-      'õ': 'o',
-      'ú': 'u',
-      'ù': 'u',
-      'û': 'u',
-      'ü': 'u',
-      'ñ': 'n',
-      'ç': 'c',
+      'á': 'a','ä': 'a','à': 'a','â': 'a','ã': 'a','å': 'a',
+      'é': 'e','è': 'e','ê': 'e','ë': 'e',
+      'í': 'i','ì': 'i','î': 'i','ï': 'i',
+      'ó': 'o','ò': 'o','ô': 'o','ö': 'o','õ': 'o',
+      'ú': 'u','ù': 'u','û': 'u','ü': 'u',
+      'ñ': 'n','ç': 'c',
     };
     acentos.forEach((k, v) => s = s.replaceAll(k, v));
     s = s.replaceAll(RegExp(r'[\s/|]+'), '-');
@@ -75,30 +59,13 @@ class _AgregarCarreraTabState extends State<AgregarCarreraTab> {
     }
     final idOk = RegExp(r'^[a-z0-9\-_]{3,32}$').hasMatch(id);
     if (!idOk) {
-      showSnackcError(
-        "El ID debe tener 3-32 caracteres y solo usar a-z, 0-9, '-' o '_'.",
-      );
+      showSnackcError("El ID debe tener 3-32 caracteres y solo usar a-z, 0-9, '-' o '_'.");
       return;
     }
 
+    setState(() => _saving = true);
     try {
-      final creado = await FirebaseFirestore.instance.runTransaction<bool>((
-        tx,
-      ) async {
-        final docRef = FirebaseFirestore.instance
-            .collection('Carreras')
-            .doc(id);
-        final snap = await tx.get(docRef);
-        if (snap.exists) return false;
-
-        tx.set(docRef, {
-          'id': id,
-          'nombre': nombre,
-          'dateCreate': FieldValue.serverTimestamp(),
-        });
-        return true;
-      });
-
+      final creado = await _controller.create(id: id, nombre: nombre);
       if (!mounted) return;
 
       if (creado) {
@@ -110,6 +77,8 @@ class _AgregarCarreraTabState extends State<AgregarCarreraTab> {
       }
     } catch (e) {
       showSnackcError("Error al guardar: $e");
+    } finally {
+      if (mounted) setState(() => _saving = false);
     }
   }
 
@@ -152,13 +121,8 @@ class _AgregarCarreraTabState extends State<AgregarCarreraTab> {
                   cursorColor: AppColors.primary,
                   decoration: InputDecoration(
                     labelText: 'Nombre de la carrera',
-                    labelStyle: const TextStyle(
-                      color: AppColors.onSecondaryText,
-                    ),
-                    prefixIcon: const Icon(
-                      Icons.menu_book,
-                      color: AppColors.primary,
-                    ),
+                    labelStyle: const TextStyle(color: AppColors.onSecondaryText),
+                    prefixIcon: const Icon(Icons.menu_book, color: AppColors.primary),
                     filled: true,
                     fillColor: AppColors.onSurface,
                     enabledBorder: _border(AppColors.onBorderTextField),
@@ -177,16 +141,12 @@ class _AgregarCarreraTabState extends State<AgregarCarreraTab> {
                     TextField(
                       controller: _idCarreraController,
                       cursorColor: AppColors.primary,
+                      enabled: !_saving,
                       decoration: InputDecoration(
                         labelText: 'ID de la carrera',
                         helperText: "Puede escribirlo o generarlo del nombre",
-                        helperStyle: const TextStyle(
-                          color: AppColors.onSecondaryText,
-                        ),
-                        prefixIcon: const Icon(
-                          Icons.tag,
-                          color: AppColors.primary,
-                        ),
+                        helperStyle: const TextStyle(color: AppColors.onSecondaryText),
+                        prefixIcon: const Icon(Icons.tag, color: AppColors.primary),
                         filled: true,
                         fillColor: AppColors.onSurface,
                         enabledBorder: _border(AppColors.onBorderTextField),
@@ -197,27 +157,19 @@ class _AgregarCarreraTabState extends State<AgregarCarreraTab> {
                     Tooltip(
                       message: 'Generar ID a partir del nombre',
                       child: ElevatedButton.icon(
-                        onPressed: nombreNoVacio
+                        onPressed: (!_saving && nombreNoVacio)
                             ? () {
-                                final generado = _generarIdDesdeNombre(
-                                  _nombreCarreraController.text,
-                                );
-                                setState(
-                                  () => _idCarreraController.text = generado,
-                                );
+                                final generado = _generarIdDesdeNombre(_nombreCarreraController.text);
+                                setState(() => _idCarreraController.text = generado);
                               }
                             : null,
                         icon: const Icon(Icons.auto_fix_high),
                         label: const Text('Generar ID automáticamente'),
                         style: ElevatedButton.styleFrom(
-                          backgroundColor:
-                              AppColors.secondary, // botón secundario
-                          foregroundColor:
-                              AppColors.onPrimaryText, // texto/ícono oscuro
+                          backgroundColor: AppColors.secondary,
+                          foregroundColor: AppColors.onPrimaryText,
                           padding: const EdgeInsets.symmetric(vertical: 12),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                           elevation: 0,
                         ),
                       ),
@@ -230,21 +182,24 @@ class _AgregarCarreraTabState extends State<AgregarCarreraTab> {
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton.icon(
-                    icon: const Icon(Icons.save),
-                    label: const Text(
-                      'Guardar Carrera',
-                      style: TextStyle(fontWeight: FontWeight.w700),
+                    icon: _saving
+                        ? const SizedBox(
+                            width: 18, height: 18,
+                            child: CircularProgressIndicator(strokeWidth: 2,
+                              valueColor: AlwaysStoppedAnimation<Color>(Colors.white)))
+                        : const Icon(Icons.save),
+                    label: Text(
+                      _saving ? 'Guardando...' : 'Guardar Carrera',
+                      style: const TextStyle(fontWeight: FontWeight.w700),
                     ),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.primary,
                       foregroundColor: Colors.white,
                       padding: const EdgeInsets.symmetric(vertical: 14),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                       elevation: 2,
                     ),
-                    onPressed: _guardarCarrera,
+                    onPressed: _saving ? null : _guardarCarrera,
                   ),
                 ),
 
@@ -252,11 +207,7 @@ class _AgregarCarreraTabState extends State<AgregarCarreraTab> {
                 const Divider(color: AppColors.onLineDivider, height: 24),
                 Row(
                   children: const [
-                    Icon(
-                      Icons.info_outline,
-                      color: AppColors.onTertiaryText,
-                      size: 18,
-                    ),
+                    Icon(Icons.info_outline, color: AppColors.onTertiaryText, size: 18),
                     SizedBox(width: 6),
                     Expanded(
                       child: Text(

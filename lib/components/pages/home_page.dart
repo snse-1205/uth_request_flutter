@@ -115,7 +115,7 @@ class _HomePageState extends State<HomePage> {
 
           onTap: navController.changePage,
         ),
-        floatingActionButton: navController.selectedIndex.value == 2
+        floatingActionButton: navController.selectedIndex.value == 2 || navController.selectedIndex.value == 3
             ? null
             : Column(
                 mainAxisSize: MainAxisSize.min,
@@ -138,8 +138,6 @@ class _HomePageState extends State<HomePage> {
                         ),
                         FloatingActionButton(
                           heroTag: 'CREAR TEMA',
-<<<<<<< HEAD
-<<<<<<< HEAD
                           onPressed: () {
                             Get.to(
                               CrearTemaPage(
@@ -148,14 +146,6 @@ class _HomePageState extends State<HomePage> {
                               transition: Transition.rightToLeftWithFade,
                             );
                           },
-=======
-                          onPressed: () {},
->>>>>>> b4e4eea (Revert "Vista para la comunidad con la card del post")
-=======
-                          
-                          onPressed: () {
-                          },
->>>>>>> 7ce36c6 (Cambios)
                           backgroundColor: AppColors.primaryVariant,
                           mini: true,
                           shape: CircleBorder(),
@@ -197,6 +187,32 @@ class _HomePageState extends State<HomePage> {
                     ),
                     SizedBox(height: 10),
                   ],
+                  FloatingActionButton(
+                    heroTag: 'MAS',
+                    onPressed: () {
+                      if (navController.selectedIndex.value == 0) {
+                        Get.to(
+                          CreateRequest(),
+                          transition: Transition.rightToLeftWithFade,
+                        );
+                      } else {
+                        setState(() {
+                          showExtraButtons = !showExtraButtons;
+                        });
+                      }
+                    },
+                    backgroundColor: AppColors.primarySecondary,
+                    shape: CircleBorder(),
+                    child: navController.selectedIndex.value == 0
+                        ? Icon(
+                            Icons.list_alt_outlined,
+                            color: AppColors.onSurface,
+                          )
+                        : Icon(
+                            showExtraButtons ? Icons.close : Icons.add,
+                            color: AppColors.onSurface,
+                          ),
+                  ),
                 ],
               ),
       ),

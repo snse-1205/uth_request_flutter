@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:uth_request_flutter_application/components/componentsAdmin/catalogos/controllers/campusController.dart';
 import 'package:uth_request_flutter_application/components/utils/alerts.dart';
 import 'package:uth_request_flutter_application/components/utils/color.dart';
 
+// usa el controlador unificado
 class AgregarCampusTab extends StatefulWidget {
   const AgregarCampusTab({super.key});
 
@@ -12,6 +13,9 @@ class AgregarCampusTab extends StatefulWidget {
 
 class _AgregarCampusTabState extends State<AgregarCampusTab> {
   final TextEditingController _lugarCampusController = TextEditingController();
+  final CampusController _controller = CampusController();
+
+  bool _saving = false;
 
   Future<void> _guardarCampus() async {
     final nombre = _lugarCampusController.text.trim();
@@ -20,22 +24,9 @@ class _AgregarCampusTabState extends State<AgregarCampusTab> {
       return;
     }
 
+    setState(() => _saving = true);
     try {
-      final creado =
-          await FirebaseFirestore.instance.runTransaction<bool>((tx) async {
-        final docRef =
-            FirebaseFirestore.instance.collection('Campus').doc(nombre);
-
-        final snap = await tx.get(docRef);
-        if (snap.exists) {
-          return false;
-        }
-
-        tx.set(docRef, {
-          'dateCreate': FieldValue.serverTimestamp(),
-        });
-        return true;
-      });
+      final creado = await _controller.create(nombre);
 
       if (!mounted) return;
 
@@ -47,6 +38,8 @@ class _AgregarCampusTabState extends State<AgregarCampusTab> {
       }
     } catch (e) {
       showSnackcError("Error al guardar: $e");
+    } finally {
+      if (mounted) setState(() => _saving = false);
     }
   }
 
@@ -54,6 +47,12 @@ class _AgregarCampusTabState extends State<AgregarCampusTab> {
         borderRadius: BorderRadius.circular(12),
         borderSide: BorderSide(color: color, width: 1.2),
       );
+
+  @override
+  void dispose() {
+    _lugarCampusController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -85,6 +84,7 @@ class _AgregarCampusTabState extends State<AgregarCampusTab> {
                 TextField(
                   controller: _lugarCampusController,
                   cursorColor: AppColors.primary,
+                  enabled: !_saving,
                   decoration: InputDecoration(
                     labelText: 'Ubicación del campus',
                     labelStyle: const TextStyle(color: AppColors.onSecondaryText),
@@ -105,10 +105,15 @@ class _AgregarCampusTabState extends State<AgregarCampusTab> {
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton.icon(
-                    icon: const Icon(Icons.save),
-                    label: const Text(
-                      'Guardar Campus',
-                      style: TextStyle(fontWeight: FontWeight.w700),
+                    icon: _saving
+                        ? const SizedBox(
+                            width: 18, height: 18,
+                            child: CircularProgressIndicator(strokeWidth: 2,
+                              valueColor: AlwaysStoppedAnimation<Color>(Colors.white)))
+                        : const Icon(Icons.save),
+                    label: Text(
+                      _saving ? 'Guardando...' : 'Guardar Campus',
+                      style: const TextStyle(fontWeight: FontWeight.w700),
                     ),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.primary,
@@ -119,7 +124,6 @@ class _AgregarCampusTabState extends State<AgregarCampusTab> {
                       ),
                       elevation: 2,
                     ).copyWith(
-                      // efecto al presionar
                       overlayColor: WidgetStateProperty.resolveWith((states) {
                         if (states.contains(WidgetState.pressed)) {
                           return AppColors.primarySecondary.withOpacity(0.15);
@@ -127,12 +131,11 @@ class _AgregarCampusTabState extends State<AgregarCampusTab> {
                         return null;
                       }),
                     ),
-                    onPressed: _guardarCampus,
+                    onPressed: _saving ? null : _guardarCampus,
                   ),
                 ),
 
                 const SizedBox(height: 8),
-                // Línea “estilo app”
                 const Divider(color: AppColors.onLineDivider, height: 24),
                 Row(
                   children: const [

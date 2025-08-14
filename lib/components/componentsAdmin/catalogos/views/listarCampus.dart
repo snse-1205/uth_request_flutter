@@ -1,32 +1,23 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:uth_request_flutter_application/components/componentsAdmin/catalogos/controllers/campusController.dart';
+import 'package:uth_request_flutter_application/components/componentsAdmin/catalogos/models/campusModel.dart';
 import 'package:uth_request_flutter_application/components/utils/color.dart';
 
 class ListarCampusTab extends StatelessWidget {
-  const ListarCampusTab({super.key});
+  ListarCampusTab({super.key});
+
+  final CampusController _controller = CampusController();
 
   @override
   Widget build(BuildContext context) {
     return ColoredBox(
       color: AppColors.onBackgroundDefault,
-      child: StreamBuilder<QuerySnapshot>(
-        stream: FirebaseFirestore.instance
-            .collection('Campus')
-            .orderBy('dateCreate', descending: true)
-            .snapshots(),
+      child: StreamBuilder<List<CampusModel>>(
+        stream: _controller.streamAll(),
         builder: (context, snapshot) {
           if (snapshot.hasError) {
-            return Center(
-              child: Text(
-                'Ocurrió un error al cargar los campus',
-                style: const TextStyle(
-                  color: AppColors.electricError,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            );
+            return const _ErrorState();
           }
-
           if (!snapshot.hasData) {
             return const Center(
               child: CircularProgressIndicator(
@@ -35,19 +26,15 @@ class ListarCampusTab extends StatelessWidget {
             );
           }
 
-          final docs = snapshot.data!.docs;
-          if (docs.isEmpty) {
-            return const _EmptyState();
-          }
+          final campus = snapshot.data!;
+          if (campus.isEmpty) return const _EmptyState();
 
           return ListView.separated(
             padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
-            itemCount: docs.length,
-            separatorBuilder: (_, __) =>
-                const SizedBox(height: 8), // espacio entre cards
-            itemBuilder: (context, index) {
-              final doc = docs[index];
-
+            itemCount: campus.length,
+            separatorBuilder: (_, __) => const SizedBox(height: 8),
+            itemBuilder: (context, i) {
+              final c = campus[i];
               return Card(
                 color: AppColors.onSurface,
                 elevation: 4,
@@ -61,13 +48,14 @@ class ListarCampusTab extends StatelessWidget {
                     child: Icon(Icons.location_city, color: AppColors.primary),
                   ),
                   title: Text(
-                    doc.id, // 👈 SOLO mostramos el ID del campus
+                    c.id,
                     style: const TextStyle(
                       color: AppColors.onPrimaryText,
                       fontWeight: FontWeight.w700,
                     ),
                   ),
                   onTap: () {
+                    // acciones futuras: detalle/editar/eliminar
                   },
                 ),
               );
@@ -90,8 +78,7 @@ class _EmptyState extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(Icons.school_outlined,
-                size: 48, color: AppColors.onTertiaryText),
+            Icon(Icons.school_outlined, size: 48, color: AppColors.onTertiaryText),
             SizedBox(height: 10),
             Text(
               'No hay campus registrados',
@@ -102,6 +89,26 @@ class _EmptyState extends StatelessWidget {
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class _ErrorState extends StatelessWidget {
+  const _ErrorState();
+
+  @override
+  Widget build(BuildContext context) {
+    return const Center(
+      child: Padding(
+        padding: EdgeInsets.all(24.0),
+        child: Text(
+          'Ocurrió un error al cargar los campus',
+          style: TextStyle(
+            color: AppColors.electricError,
+            fontWeight: FontWeight.w600,
+          ),
         ),
       ),
     );

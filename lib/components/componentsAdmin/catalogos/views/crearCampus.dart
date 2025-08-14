@@ -4,8 +4,6 @@ import 'package:uth_request_flutter_application/components/utils/alerts.dart';
 import 'package:uth_request_flutter_application/components/utils/color.dart';
 
 // usa el controlador unificado
-import 'package:cloud_firestore/cloud_firestore.dart';
-
 class AgregarCampusTab extends StatefulWidget {
   const AgregarCampusTab({super.key});
 

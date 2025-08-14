@@ -9,6 +9,8 @@ import 'package:uth_request_flutter_application/components/auth/register/control
 import 'package:uth_request_flutter_application/components/pages/fondo_inicio_sesion.dart';
 import 'package:uth_request_flutter_application/components/pages/home_page.dart';
 import 'package:uth_request_flutter_application/components/utils/color.dart';
+import 'package:uth_request_flutter_application/temas/controllers/comentarios_controller.dart';
+import 'package:uth_request_flutter_application/temas/controllers/temas_controller.dart';
 
 void main() async {
   await GetStorage.init();
@@ -17,7 +19,8 @@ void main() async {
   runApp(MainApp());
   Get.put(AuthController(), permanent: true);
   Get.put(RegisterController(), permanent: true);
-
+  Get.put(PostController(), permanent: true);
+  Get.put(CommentController(), permanent: true);
 }
 
 class MainApp extends StatelessWidget {

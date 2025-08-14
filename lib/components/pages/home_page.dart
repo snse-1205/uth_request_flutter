@@ -142,7 +142,7 @@ class _HomePageState extends State<HomePage> {
                           onPressed: () {
                             Get.to(
                               CrearTemaPage(
-                                comentario: true,
+                                comentario: false,
                               ),
                               transition: Transition.rightToLeftWithFade,
                             );

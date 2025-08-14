@@ -77,3 +77,17 @@ String CreateRequest_FinLabel = 'Fin';
 String CreateRequest_EnviarPeticionButton = 'ENVIAR PETICIÓN';
 String CreateRequest_EnviarPeticionNota = '*Puede crear una petición, pero será cuestión del administrador aceptar la apertura de esta clase. Se le notificará al administrador de esta petición';
 
+//Crud Campus
+String CrudCampus_TabCrear ="Registrar Campus";
+String CrudCampus_TabListar ="Mostrar Campus Registrados";
+String CrudCampus_Titulo="Gestion de Campus";
+
+//Crud Carreras
+String CrudCarreras_TabCrear ="Registrar Carreras";
+String CrudCarreras_TabListar ="Mostrar Carreras Registrados";
+String CrudCarreras_Titulo="Gestion de Carreras";
+
+//Crud Clases
+String CrudClases_TabCrear ="Registrar Clases";
+String CrudClases_TabListar ="Mostrar Clases Registrados";
+String CrudClases_Titulo="Gestion de Clases";

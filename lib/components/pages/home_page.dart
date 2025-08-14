@@ -2,12 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:uth_request_flutter_application/components/componentsAdmin/panelControl/views/panelControl.dart';
 import 'package:uth_request_flutter_application/components/notificaciones/views/notificacionesVista.dart';
 import 'package:uth_request_flutter_application/components/peticiones/views/createRequest.dart';
 import 'package:uth_request_flutter_application/components/shared/menu_drawer.dart';
 import 'package:uth_request_flutter_application/components/shared/navigation_controller.dart';
 import 'package:uth_request_flutter_application/components/shared/peticiones_navBar.dart';
 import 'package:uth_request_flutter_application/components/shared/temas_navBar.dart';
+import 'package:uth_request_flutter_application/components/usuarios/views/create_user_page.dart';
+import 'package:uth_request_flutter_application/components/usuarios/views/usuarios_page.dart';
 import 'package:uth_request_flutter_application/components/utils/color.dart';
 import 'package:uth_request_flutter_application/components/utils/string.dart';
 
@@ -30,11 +33,7 @@ class _HomePageState extends State<HomePage> {
   String cuenta = '';
   String rol = '';
 
-  final List<Widget> paginas = [
-    PeticionesPage(),
-    TemasPage(),
-    Notificacionesvista(),
-  ];
+  late List<Widget> paginas;
 
   @override
   void initState() {
@@ -44,6 +43,12 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    paginas = [PeticionesPage(), TemasPage(), Notificacionesvista()];
+
+    if (rol.toLowerCase() == "administrador") {
+      paginas.add(PanelControl());
+    }
+
     return Obx(
       () => Scaffold(
         appBar: AppBar(
@@ -100,11 +105,17 @@ class _HomePageState extends State<HomePage> {
               activeIcon: Icon(Icons.campaign),
               label: anuncios,
             ),
+            if (rol.toLowerCase() == "administrador")
+              BottomNavigationBarItem(
+                icon: Icon(Icons.admin_panel_settings_outlined),
+                activeIcon: Icon(Icons.admin_panel_settings),
+                label: "Gestiones",
+              ),
           ],
 
           onTap: navController.changePage,
         ),
-        floatingActionButton: navController.selectedIndex.value == 2
+        floatingActionButton: navController.selectedIndex.value == 2 || navController.selectedIndex.value == 3
             ? null
             : Column(
                 mainAxisSize: MainAxisSize.min,
@@ -127,7 +138,11 @@ class _HomePageState extends State<HomePage> {
                         ),
                         FloatingActionButton(
                           heroTag: 'CREAR TEMA',
-                          onPressed: () {},
+                          onPressed: () {
+                            Get.to(
+                            {}
+                            );
+                          },
                           backgroundColor: AppColors.primaryVariant,
                           mini: true,
                           shape: CircleBorder(),
@@ -152,7 +167,10 @@ class _HomePageState extends State<HomePage> {
                         FloatingActionButton(
                           heroTag: 'CREAR PETICION',
                           onPressed: () {
-                            Get.to(CreateRequest(), transition: Transition.rightToLeftWithFade);
+                            Get.to(
+                              CreateRequest(),
+                              transition: Transition.rightToLeftWithFade,
+                            );
                           },
                           backgroundColor: AppColors.primaryVariant,
                           mini: true,
@@ -170,7 +188,10 @@ class _HomePageState extends State<HomePage> {
                     heroTag: 'MAS',
                     onPressed: () {
                       if (navController.selectedIndex.value == 0) {
-                        Get.to(CreateRequest(), transition: Transition.rightToLeftWithFade);
+                        Get.to(
+                          CreateRequest(),
+                          transition: Transition.rightToLeftWithFade,
+                        );
                       } else {
                         setState(() {
                           showExtraButtons = !showExtraButtons;

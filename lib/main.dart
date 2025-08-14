@@ -26,8 +26,6 @@ void main() async {
   Get.put(RegisterController(), permanent: true);
   Get.put(PostController(), permanent: true);
   Get.put(CommentController(), permanent: true);
-  Get.put(PostController(), permanent: true);
-  Get.put(CommentController(), permanent: true);
 }
 
 

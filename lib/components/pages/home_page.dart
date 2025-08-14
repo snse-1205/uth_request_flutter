@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:uth_request_flutter_application/components/componentsAdmin/panelControl/views/panelControl.dart';
 import 'package:uth_request_flutter_application/components/notificaciones/views/notificacionesVista.dart';
 import 'package:uth_request_flutter_application/components/peticiones/views/createRequest.dart';
 import 'package:uth_request_flutter_application/components/shared/menu_drawer.dart';
@@ -44,7 +45,7 @@ class _HomePageState extends State<HomePage> {
     paginas = [PeticionesPage(), TemasPage(), Notificacionesvista()];
 
     if (rol.toLowerCase() == "administrador") {
-      paginas.add(UsuariosPage());
+      paginas.add(PanelControl());
     }
 
     return Obx(
@@ -106,9 +107,9 @@ class _HomePageState extends State<HomePage> {
             ),
             if (rol.toLowerCase() == "administrador")
               BottomNavigationBarItem(
-                icon: Icon(Icons.manage_accounts_outlined),
-                activeIcon: Icon(Icons.manage_accounts),
-                label: "Usuarios",
+                icon: Icon(Icons.admin_panel_settings_outlined),
+                activeIcon: Icon(Icons.admin_panel_settings),
+                label: "Gestiones",
               ),
           ],
 
@@ -138,6 +139,7 @@ class _HomePageState extends State<HomePage> {
                         FloatingActionButton(
                           heroTag: 'CREAR TEMA',
 <<<<<<< HEAD
+<<<<<<< HEAD
                           onPressed: () {
                             Get.to(
                               CrearTemaPage(
@@ -149,6 +151,11 @@ class _HomePageState extends State<HomePage> {
 =======
                           onPressed: () {},
 >>>>>>> b4e4eea (Revert "Vista para la comunidad con la card del post")
+=======
+                          
+                          onPressed: () {
+                          },
+>>>>>>> 7ce36c6 (Cambios)
                           backgroundColor: AppColors.primaryVariant,
                           mini: true,
                           shape: CircleBorder(),
@@ -190,39 +197,6 @@ class _HomePageState extends State<HomePage> {
                     ),
                     SizedBox(height: 10),
                   ],
-                  FloatingActionButton(
-                    heroTag: 'MAS',
-                    onPressed: () {
-                      if (navController.selectedIndex.value == 0) {
-                        Get.to(
-                          CreateRequest(),
-                          transition: Transition.rightToLeftWithFade,
-                        );
-                      }
-                      if (rol.toLowerCase() == "administrador" &&
-                          navController.selectedIndex.value == 3) {
-                        Get.to(
-                          CreateUserPage(),
-                          transition: Transition.rightToLeft,
-                        );
-                      } else {
-                        setState(() {
-                          showExtraButtons = !showExtraButtons;
-                        });
-                      }
-                    },
-                    backgroundColor: AppColors.primarySecondary,
-                    shape: CircleBorder(),
-                    child: navController.selectedIndex.value == 0
-                        ? Icon(
-                            Icons.list_alt_outlined,
-                            color: AppColors.onSurface,
-                          )
-                        : Icon(
-                            showExtraButtons ? Icons.close : Icons.add,
-                            color: AppColors.onSurface,
-                          ),
-                  ),
                 ],
               ),
       ),

@@ -1,17 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:uth_request_flutter_application/components/componentsAdmin/catalogos/views/crearCampus.dart';
-import 'package:uth_request_flutter_application/components/componentsAdmin/catalogos/views/listarCampus.dart';
-import 'package:uth_request_flutter_application/components/utils/color.dart';
+import 'package:uth_request_flutter_application/components/componentsAdmin/catalogos/views/crearCarrera.dart';
+import 'package:uth_request_flutter_application/components/componentsAdmin/catalogos/views/listarCarreras.dart';
 import 'package:uth_request_flutter_application/components/utils/string.dart';
+import 'package:uth_request_flutter_application/components/utils/color.dart'; // <- AppColors
 
-class CrudCampus extends StatelessWidget {
-  const CrudCampus({super.key});
+class CrudCarreras extends StatelessWidget {
+  const CrudCarreras({super.key});
 
   @override
   Widget build(BuildContext context) {
-    // Tema local para estilizar AppBar/TabBar sin tocar el tema global
     final ThemeData base = Theme.of(context);
-    
     final ThemeData themed = base.copyWith(
       scaffoldBackgroundColor: AppColors.onBackgroundDefault,
       appBarTheme: const AppBarTheme(
@@ -44,11 +42,11 @@ class CrudCampus extends StatelessWidget {
         child: Scaffold(
           backgroundColor: AppColors.onBackgroundDefault,
           appBar: AppBar(
-            title: Text(CrudCampus_TabCrear),
+            title: Text(CrudCarreras_Titulo),
             bottom: const PreferredSize(
               preferredSize: Size.fromHeight(48),
               child: ColoredBox(
-                color: AppColors.primary, // barra detrás de las tabs
+                color: AppColors.primary,
                 child: TabBar(
                   tabs: [
                     Tab(text: 'Crear'),
@@ -59,7 +57,12 @@ class CrudCampus extends StatelessWidget {
               ),
             ),
           ),
-          body: TabBarView(children: [AgregarCampusTab(), ListarCampusTab()]),
+          body: TabBarView(
+            children: [
+              AgregarCarreraTab(),
+              ListarCarrerasTab(),
+            ],
+          ),
         ),
       ),
     );

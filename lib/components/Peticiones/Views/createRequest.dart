@@ -1,158 +1,190 @@
 import 'package:flutter/material.dart';
-import 'package:uth_request_flutter_application/components/Peticiones/Views/subjectSelectionScreen.dart';
-import 'package:uth_request_flutter_application/components/utils/string.dart';
-import 'package:uth_request_flutter_application/components/utils/color.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:uth_request_flutter_application/components/Peticiones/Controllers/controller.dart';
+import 'package:uth_request_flutter_application/components/Peticiones/Models/createRequestModel.dart';
 
-class CreateRequest extends StatefulWidget {
-  const CreateRequest({super.key});
+class CreateRequestView extends StatefulWidget {
+  final String studentDocId; // id de documento en Estudiantes/{id}
+
+  const CreateRequestView({super.key, required this.studentDocId});
 
   @override
-  State<CreateRequest> createState() => _CreateRequestState();
+  State<CreateRequestView> createState() => _CreateRequestViewState();
 }
 
-class _CreateRequestState extends State<CreateRequest> {
-  String requestType = 'APERTURA DE CLASE';
-  String? selectedSubject;
-  String? selectedDay;
-  String modality = 'Presencial';
-  TimeOfDay startTime = TimeOfDay(hour: 0, minute: 0);
-  TimeOfDay endTime = TimeOfDay(hour: 0, minute: 0);
+class _CreateRequestViewState extends State<CreateRequestView> {
+  // Fijo
+  static const String _requestType = 'APERTURA DE CLASE';
 
-  final List<String> requestTypes = ['APERTURA DE CLASE', 'OTRA OPCIÓN'];
-  final List<String> days = ['Semana lunes-jueves', 'Fin de semana'];
+  // Estado de UI
+  String? _selectedClassId;
+  String _modality = 'Presencial';
+  String? _selectedDay;
+  TimeOfDay _startTime = const TimeOfDay(hour: 0, minute: 0);
+  TimeOfDay _endTime = const TimeOfDay(hour: 0, minute: 0);
 
-  Future<void> _selectTime(BuildContext context, bool isStartTime) async {
-    final TimeOfDay? picked = await showTimePicker(
+  final _days = const ['Semana lunes-jueves', 'Fin de semana'];
+
+  final _controller = ClassRequestController();
+  late Future<List<ClaseItem>> _futureClasses;
+
+  Future<void> _pickTime(bool isStart) async {
+    final picked = await showTimePicker(
       context: context,
-      initialTime: isStartTime ? startTime : endTime,
+      initialTime: isStart ? _startTime : _endTime,
     );
     if (picked != null) {
       setState(() {
-        if (isStartTime) {
-          startTime = picked;
+        if (isStart) {
+          _startTime = picked;
         } else {
-          endTime = picked;
+          _endTime = picked;
         }
       });
     }
   }
 
+  String _fmt(TimeOfDay t) {
+    final h = t.hour.toString().padLeft(2, '0');
+    final m = t.minute.toString().padLeft(2, '0');
+    return '$h:$m';
+    // Si quieres 12h con AM/PM, ajusta aquí.
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _futureClasses = _controller.fetchAvailableClasses(widget.studentDocId);
+  }
+
+  Future<void> _onSubmit() async {
+    if (_selectedClassId == null || _selectedDay == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Selecciona clase, día y horarios')),
+      );
+      return;
+    }
+
+    final payload = PeticionCreate(
+      tipo: _requestType,
+      claseId: _selectedClassId!,
+      modalidad: _modality,
+      dia: _selectedDay!,
+      horaInicio: _fmt(_startTime),
+      horaFin: _fmt(_endTime),
+      estudianteId: widget.studentDocId,
+      estado: 'espera aprobación',
+      dateCreate:
+          Timestamp.now(), // o FieldValue.serverTimestamp() desde controller si prefieres
+    );
+
+    try {
+      await _controller.createRequest(payload);
+      if (mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('Petición creada')));
+        Navigator.of(context).pop(); // opcional
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Error al crear petición: $e')));
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    // Reemplaza colores/estilos con los tuyos (AppColors, etc.) si lo deseas
     return Scaffold(
-      backgroundColor: AppColors.onBackgroundDefault,
-      appBar: AppBar(
-        foregroundColor: AppColors.onSurface,
-        backgroundColor: AppColors.primary,
-        title: Text(CreateRequest_CrearPeticionTitle),
-      ),
-
+      appBar: AppBar(title: const Text('Crear petición')),
       body: Padding(
-        padding: EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Dropdown de tipo de petición
+            // Tipo fijo
             Card(
-              color: AppColors.onSurface,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: DropdownButtonFormField<String>(
-                  value: requestType,
-                  items: requestTypes
-                      .map((e) => DropdownMenuItem(value: e, child: Text(e)))
-                      .toList(),
-                  onChanged: (value) {
-                    setState(() {
-                      requestType = value!;
-                    });
-                  },
-                  decoration: InputDecoration(
-                    labelText: CreateRequest_TipoPeticionLabel,
-                    filled: true,
-                    fillColor: AppColors.onSurface,
-                    enabledBorder: InputBorder.none,
-                    focusedBorder: InputBorder.none,
-                  ),
-                  dropdownColor: AppColors.onSurface,
+              child: const Padding(
+                padding: EdgeInsets.all(16),
+                child: Text(
+                  'APERTURA DE CLASE',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                 ),
               ),
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
 
-            // Dropdown de asignatura
-            SizedBox(
-              width: double.infinity,
-              child: GestureDetector(
-                onTap: () async {
-                  final result = await Navigator.push<String>(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const SubjectSelectionScreen(),
-                    ),
+            // Dropdown de clases disponibles
+            FutureBuilder<List<ClaseItem>>(
+              future: _futureClasses,
+              builder: (context, snap) {
+                if (snap.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+                if (snap.hasError) {
+                  return Text('Error al cargar clases: ${snap.error}');
+                }
+                final classes = snap.data ?? [];
+                if (classes.isEmpty) {
+                  return const Text(
+                    'No hay clases disponibles para solicitar.',
                   );
-                  if (result != null) {
-                    setState(() {
-                      selectedSubject = result;
-                    });
-                  }
-                },
-                child: Card(
-                  color: AppColors.onSurface,
+                }
+                return Card(
                   child: Padding(
-                    padding: EdgeInsets.all(20),
-                    child: Text(
-                      selectedSubject ?? 'Selecciona una asignatura',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
+                    padding: const EdgeInsets.all(16),
+                    child: DropdownButtonFormField<String>(
+                      value: _selectedClassId,
+                      items: classes
+                          .map(
+                            (c) => DropdownMenuItem(
+                              value: c.id,
+                              child: Text('${c.nombre} (${c.id})'),
+                            ),
+                          )
+                          .toList(),
+                      onChanged: (v) => setState(() => _selectedClassId = v),
+                      decoration: const InputDecoration(
+                        labelText: 'Selecciona una asignatura',
+                        border: InputBorder.none,
                       ),
                     ),
                   ),
-                ),
-              ),
+                );
+              },
             ),
 
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
 
-            // Radio buttons de modalidad
+            // Modalidad
             Card(
-              color: AppColors.onSurface,
               child: Padding(
-                padding: const EdgeInsets.all(20),
+                padding: const EdgeInsets.all(16),
                 child: Column(
                   children: [
                     Row(
                       children: [
                         Radio<String>(
                           value: 'Presencial',
-                          groupValue: modality,
-                          onChanged: (value) {
-                            setState(() {
-                              modality = value!;
-                            });
-                          },
-                          fillColor: WidgetStateProperty.all(AppColors.primary),
+                          groupValue: _modality,
+                          onChanged: (v) => setState(() => _modality = v!),
                         ),
-                        Text(CreateRequest_ModalidadPresencial),
+                        const Text('Presencial'),
+                        const SizedBox(width: 12),
                         Radio<String>(
                           value: 'Presencial-ZOOM',
-                          groupValue: modality,
-                          onChanged: (value) {
-                            setState(() {
-                              modality = value!;
-                            });
-                          },
-                          fillColor: WidgetStateProperty.all(AppColors.primary),
+                          groupValue: _modality,
+                          onChanged: (v) => setState(() => _modality = v!),
                         ),
-                        Text(CreateRequest_ModalidadZoom),
+                        const Text('Presencial-ZOOM'),
                       ],
                     ),
-                    Text(
-                      CreateRequest_ModalidadInfo,
+                    const SizedBox(height: 4),
+                    const Text(
+                      'Selecciona la modalidad de la clase.',
                       style: TextStyle(fontSize: 12),
                     ),
                   ],
@@ -160,62 +192,43 @@ class _CreateRequestState extends State<CreateRequest> {
               ),
             ),
 
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
 
-            // Dropdown de días
+            // Días
             Card(
-              color: AppColors.onSurface,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
-              ),
               child: Padding(
                 padding: const EdgeInsets.all(16),
                 child: DropdownButtonFormField<String>(
-                  value: selectedDay,
-                  items: days
+                  value: _selectedDay,
+                  items: _days
                       .map((e) => DropdownMenuItem(value: e, child: Text(e)))
                       .toList(),
-                  onChanged: (value) {
-                    setState(() {
-                      selectedDay = value;
-                    });
-                  },
-                  decoration: InputDecoration(
-                    labelText: CreateRequest_FechaLabel,
-                    filled: true,
-                    fillColor: AppColors.onSurface,
-                    enabledBorder: InputBorder.none,
-                    focusedBorder: InputBorder.none,
+                  onChanged: (v) => setState(() => _selectedDay = v),
+                  decoration: const InputDecoration(
+                    labelText: 'Días',
+                    border: InputBorder.none,
                   ),
-                  dropdownColor: AppColors.onSurface,
                 ),
               ),
             ),
 
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
 
-            // Selección de hora de inicio y fin
+            // Horarios manuales
             Row(
               children: [
                 Expanded(
                   child: Card(
-                    color: AppColors.onSurface,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
                     child: Padding(
                       padding: const EdgeInsets.all(16),
                       child: InkWell(
-                        onTap: () => _selectTime(context, true),
+                        onTap: () => _pickTime(true),
                         child: InputDecorator(
-                          decoration: InputDecoration(
-                            labelText: CreateRequest_InicioLabel,
+                          decoration: const InputDecoration(
+                            labelText: 'Hora inicio',
                             border: InputBorder.none,
                           ),
-                          child: Text(
-                            startTime.format(context),
-                            style: TextStyle(color: AppColors.onPrimaryText),
-                          ),
+                          child: Text(_fmt(_startTime)),
                         ),
                       ),
                     ),
@@ -224,23 +237,16 @@ class _CreateRequestState extends State<CreateRequest> {
                 const SizedBox(width: 16),
                 Expanded(
                   child: Card(
-                    color: AppColors.onSurface,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
                     child: Padding(
                       padding: const EdgeInsets.all(16),
                       child: InkWell(
-                        onTap: () => _selectTime(context, false),
+                        onTap: () => _pickTime(false),
                         child: InputDecorator(
-                          decoration: InputDecoration(
-                            labelText: CreateRequest_FinLabel,
+                          decoration: const InputDecoration(
+                            labelText: 'Hora fin',
                             border: InputBorder.none,
                           ),
-                          child: Text(
-                            endTime.format(context),
-                            style: TextStyle(color: AppColors.onPrimaryText),
-                          ),
+                          child: Text(_fmt(_endTime)),
                         ),
                       ),
                     ),
@@ -249,27 +255,15 @@ class _CreateRequestState extends State<CreateRequest> {
               ],
             ),
 
-            Spacer(),
+            const Spacer(),
 
-            // Botón de enviar
+            // Enviar
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
-                style: ButtonStyle(
-                  backgroundColor: WidgetStateProperty.all(AppColors.primary),
-                  foregroundColor: WidgetStatePropertyAll(AppColors.onSurface),
-                ),
-                onPressed: () {
-                  print('Petición enviada');
-                },
-                child: Text(CreateRequest_EnviarPeticionButton),
+                onPressed: _onSubmit,
+                child: const Text('Enviar petición'),
               ),
-            ),
-
-            SizedBox(height: 8),
-            Text(
-              CreateRequest_EnviarPeticionNota,
-              style: TextStyle(fontSize: 11, color: AppColors.onSurface),
             ),
           ],
         ),

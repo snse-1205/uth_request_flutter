@@ -1,4 +1,3 @@
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
@@ -40,21 +39,14 @@ class AuthController extends GetxController {
       final estudiante = EstudianteModel.fromMap(doc.data()!);
       String token = '';
       //Notificaciones().guardarToken(uid);
-     
-      
-      
-      
 
       _storage.write('uid', uid);
       _storage.write('correo', estudiante.correo);
       _storage.write('nombre', estudiante.nombre);
       _storage.write('apellido', estudiante.apellido);
-      _storage.write('campus', estudiante.campus);
-      _storage.write('carrera', estudiante.carrera);
       _storage.write('cuenta', estudiante.cuenta);
       _storage.write('rol', estudiante.rol);
       _storage.write("logueado", true);
-     
 
       return null;
     } on FirebaseAuthException catch (e) {
@@ -70,7 +62,10 @@ class AuthController extends GetxController {
     Notificaciones().eliminarToken(_storage.read('uid'));
     await _auth.signOut();
     await _storage.erase();
-    Get.offAll(() => FondoInicioSesion(widget_child: LoginScreen()), transition: Transition.circularReveal);
+    Get.offAll(
+      () => FondoInicioSesion(widget_child: LoginScreen()),
+      transition: Transition.circularReveal,
+    );
   }
 
   bool estaAutenticado() {
@@ -82,12 +77,22 @@ class AuthController extends GetxController {
       nombre: _storage.read('nombre') ?? '',
       apellido: _storage.read('apellido') ?? '',
       correo: _storage.read('correo') ?? '',
-      campus: _storage.read('campus') ?? '',
-      carrera: _storage.read('carrera') ?? '',
+      campus: _storage.read('campus') != null
+          ? FirebaseFirestore.instance
+                .collection('Campus')
+                .doc(
+                  _storage.read('campus'),
+                ) // ya es DocumentReference<Object?>
+          : null,
+      carrera: (_storage.read('carrera') as List<dynamic>? ?? [])
+          .map(
+            (id) => FirebaseFirestore.instance
+                .collection('Carreras')
+                .doc(id.toString()),
+          )
+          .toList(),
       cuenta: _storage.read('cuenta') ?? '',
       rol: _storage.read('rol') ?? '',
     );
   }
-
-
 }

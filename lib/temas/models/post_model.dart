@@ -44,7 +44,10 @@ class PostModel {
       id: id,
       uid: map['uid'] ?? '',
       mensaje: map['mensaje'] ?? '',
-      carrera: userData['carrera'] ?? '',
+      carrera: (userData['carrera'] as List<dynamic>?)
+          ?.map((c) => c.toString())
+          .join(', ') ?? '',
+
       nombre: "${userData['nombre'] ?? ''} ${userData['apellido'] ?? ''}",
       verificado: userData['verificado'] ?? false,
       likes: List<String>.from(map['likes'] ?? []),

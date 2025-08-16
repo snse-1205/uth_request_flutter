@@ -104,7 +104,7 @@ class LoginScreen extends StatelessWidget {
 
           SizedBox(height: 16),
 
-          RichText(
+          /*RichText(
             textAlign: TextAlign.center,
             text: TextSpan(
               style: TextStyle(color: AppColors.primary),
@@ -120,7 +120,7 @@ class LoginScreen extends StatelessWidget {
                       );
                     },
                 ),
-                /*const TextSpan(text: "\n"),
+                const TextSpan(text: "\n"),
                 const TextSpan(text: "\n"),
                 TextSpan(
                   text: botonOlvidarContrasena,
@@ -133,10 +133,10 @@ class LoginScreen extends StatelessWidget {
                         ),
                       );
                     },
-                ),*/
+                ),
               ],
             ),
-          ),
+          ),*/
         ],
       ),
     );

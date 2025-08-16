@@ -1,9 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:uth_request_flutter_application/components/notificaciones/modelo/notificaciones_model.dart';
 import 'package:uth_request_flutter_application/components/utils/color.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -114,7 +114,12 @@ class Notificaciones extends GetxController {
     required String body,
   }) async {
     final firestore = FirebaseFirestore.instance;
-    await firestore.collection('notificaciones').add({'titulo': title, 'contenido' : body, 'uids' : uids, 'fecha' : DateTime.now()});
+    await firestore.collection('notificaciones').add({
+      'titulo': title,
+      'contenido': body,
+      'uids': uids,
+      'fecha': DateTime.now(),
+    });
 
     for (final uid in uids) {
       try {
@@ -139,6 +144,32 @@ class Notificaciones extends GetxController {
       } catch (e) {
         print('Error al procesar UID $uid: $e');
       }
+    }
+  }
+
+  Future<List<NotificacionesModel>> obtenerNotificacionesPorUid(
+    String uid,
+  ) async {
+    try {
+      final querySnapshot = await firebaseFirestore
+          .collection('notificaciones')
+          .where('uids', arrayContains: uid)
+          .orderBy('fecha', descending: true)
+          .get();
+
+      print("Docs encontrados: ${querySnapshot.docs.length}");
+
+      return querySnapshot.docs.map((doc) {
+        final data = doc.data();
+        return NotificacionesModel(
+          titulo: data['titulo'] ?? '',
+          mensaje: data['contenido'] ?? '',
+          fecha: data['fecha']?.toString() ?? '',
+        );
+      }).toList();
+    } catch (e) {
+      print("Error al obtener notificaciones: $e");
+      return [];
     }
   }
 }

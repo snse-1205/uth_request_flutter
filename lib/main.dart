@@ -13,14 +13,11 @@ import 'package:uth_request_flutter_application/temas/controllers/comentarios_co
 import 'package:uth_request_flutter_application/temas/controllers/temas_controller.dart';
 import 'package:uth_request_flutter_application/components/utils/notificaciones.dart';
 
-
 void main() async {
   await GetStorage.init();
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
 
-
-      
   runApp(MainApp());
   Get.put(AuthController(), permanent: true);
   Get.put(RegisterController(), permanent: true);
@@ -28,23 +25,23 @@ void main() async {
   Get.put(CommentController(), permanent: true);
 }
 
-
-
-
 class MainApp extends StatelessWidget {
   MainApp({super.key});
   final storage = GetStorage();
-  
 
   @override
   Widget build(BuildContext context) {
+    void mostrarMensaje() {}
 
-    void mostrarMensaje(){}
+    var uid = storage.read('uid');
+    if (uid != null) {
+      Notificaciones().guardarToken(uid);
+    } else {
+      print("UID no encontrado en el storage");
+    }
 
-    Notificaciones().guardarToken(storage.read('uid'));
     final hayData = storage.read("logueado") ?? false;
-    
-    
+
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       home: hayData

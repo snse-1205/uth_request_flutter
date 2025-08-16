@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:uth_request_flutter_application/components/componentsAdmin/catalogos/Views/crudClases.dart';
 import 'package:uth_request_flutter_application/components/componentsAdmin/catalogos/views/crudCampus.dart';
 import 'package:uth_request_flutter_application/components/componentsAdmin/catalogos/views/crudCarreras.dart';
+import 'package:uth_request_flutter_application/components/componentsAdmin/catalogos/views/crudUsuario.dart';
 import 'package:uth_request_flutter_application/components/utils/color.dart'; // 👈 para navegación con GetX
 
 class PanelControl extends StatefulWidget {
@@ -45,7 +46,7 @@ class _PanelControlState extends State<PanelControl> {
     _PanelItem(
       label: 'Estudiantes',
       icon: Icons.groups,
-      onTap: () => Get.to(() => const EstudiantesPage()),
+      onTap: () => Get.to(() => const CrudUsuarios()),
     ),
     _PanelItem(
       label: 'Clases',

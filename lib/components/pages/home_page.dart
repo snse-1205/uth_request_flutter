@@ -8,9 +8,8 @@ import 'package:uth_request_flutter_application/components/shared/menu_drawer.da
 import 'package:uth_request_flutter_application/components/shared/navigation_controller.dart';
 import 'package:uth_request_flutter_application/components/shared/peticiones_navBar.dart';
 import 'package:uth_request_flutter_application/components/shared/temas_navBar.dart';
-import 'package:uth_request_flutter_application/components/usuarios/views/create_user_page.dart';
-import 'package:uth_request_flutter_application/components/usuarios/views/usuarios_page.dart';
 import 'package:uth_request_flutter_application/components/utils/color.dart';
+import 'package:uth_request_flutter_application/components/utils/notificaciones.dart';
 import 'package:uth_request_flutter_application/components/utils/string.dart';
 import 'package:uth_request_flutter_application/temas/views/crearTema.dart';
 
@@ -28,8 +27,6 @@ class _HomePageState extends State<HomePage> {
 
   String nombre = '';
   String apellido = '';
-  String campus = '';
-  String carrera = '';
   String cuenta = '';
   String rol = '';
 
@@ -39,6 +36,12 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     _obtenerDatosStorage();
+    var uid = GetStorage().read('uid');
+    if (uid != null) {
+      Notificaciones().guardarToken(uid);
+    } else {
+      print("UID no encontrado en el storage");
+    }
   }
 
   @override
@@ -226,8 +229,6 @@ class _HomePageState extends State<HomePage> {
     setState(() {
       nombre = storage.read('nombre') ?? '';
       apellido = storage.read('apellido') ?? '';
-      campus = storage.read('campus') ?? '';
-      carrera = storage.read('carrera') ?? '';
       cuenta = storage.read('cuenta') ?? '';
       rol = storage.read('rol') ?? '';
     });

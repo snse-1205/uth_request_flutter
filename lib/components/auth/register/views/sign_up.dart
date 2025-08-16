@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -57,8 +58,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   ),
                   Center(
                     child: RegisterAcademicPage(
-                      initialCampus: controllersRes.campus.value,
-                      initialCarrera: controllersRes.carrera.value,
+                      initialCampus: controllersRes.campus,
+                      initialCarrera: controllersRes.carrera,
                       initialCuenta: controllersRes.cuenta.value,
                       onCampusChanged: (value) =>
                           controllersRes.setCampus(value),
@@ -214,13 +215,24 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           print(
                             "Registro completado: ${controllersRes.nombre.value}, ${controllersRes.apellido.value}, ${controllersRes.campus.value}, ${controllersRes.carrera.value}, ${controllersRes.cuenta.value}, ${controllersRes.contrasena.value}, ${controllersRes.confirmarContrasena.value}",
                           );
+                          final campusRef = FirebaseFirestore.instance
+                              .collection('Campus')
+                              .doc(controllersRes.campus.value);
+
+                          final carreraRefs = controllersRes.carrera
+                              .map(
+                                (id) => FirebaseFirestore.instance
+                                    .collection('Carreras')
+                                    .doc(id),
+                              )
+                              .toList();
                           _registroEstudiante(
                             context,
                             controllersRes.nombre.value,
                             controllersRes.apellido.value,
                             controllersRes.correo.value,
-                            controllersRes.campus.value,
-                            controllersRes.carrera.value,
+                            campusRef,
+                            carreraRefs,
                             controllersRes.cuenta.value,
                             "estudiante",
                             controllersRes.contrasena.value,
@@ -281,8 +293,8 @@ Future<void> _registroEstudiante(
   String nombre,
   String apellido,
   String correo,
-  String campus,
-  String carrera,
+  DocumentReference campusRef, // ahora es referencia
+  List<DocumentReference> carreraRef, // ahora es lista de referencias
   String cuenta,
   String rol,
   String contrasena,
@@ -307,12 +319,19 @@ Future<void> _registroEstudiante(
     return;
   }
 
+  showDialog(
+    context: context,
+    barrierDismissible: false,
+    builder: (_) =>
+        Center(child: CircularProgressIndicator(color: AppColors.primary)),
+  );
+
   final estudiante = EstudianteModel(
     nombre: nombre,
     apellido: apellido,
     correo: correo,
-    campus: campus,
-    carrera: carrera,
+    campus: campusRef,
+    carrera: carreraRef,
     cuenta: cuenta,
     rol: rol,
   );
@@ -323,6 +342,8 @@ Future<void> _registroEstudiante(
     contrasena: contrasena,
     estudiante: estudiante,
   );
+
+  Navigator.of(context).pop();
 
   if (error == null) {
     showDialog(

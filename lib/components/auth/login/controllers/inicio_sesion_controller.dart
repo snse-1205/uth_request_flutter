@@ -5,6 +5,7 @@ import 'package:get_storage/get_storage.dart';
 import 'package:uth_request_flutter_application/components/auth/login/views/sign_in.dart';
 import 'package:uth_request_flutter_application/components/pages/fondo_inicio_sesion.dart';
 import 'package:uth_request_flutter_application/components/auth/register/models/estudiantes_models.dart';
+import 'package:uth_request_flutter_application/components/utils/notificaciones.dart';
 
 class AuthController extends GetxController {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -36,13 +37,13 @@ class AuthController extends GetxController {
       if (!doc.exists) return "No se encontró la información del estudiante";
 
       final estudiante = EstudianteModel.fromMap(doc.data()!);
+      String token = '';
+      //Notificaciones().guardarToken(uid);
 
       _storage.write('uid', uid);
       _storage.write('correo', estudiante.correo);
       _storage.write('nombre', estudiante.nombre);
       _storage.write('apellido', estudiante.apellido);
-      _storage.write('campus', estudiante.campus);
-      _storage.write('carrera', estudiante.carrera);
       _storage.write('cuenta', estudiante.cuenta);
       _storage.write('rol', estudiante.rol);
       _storage.write("logueado", true);
@@ -58,9 +59,13 @@ class AuthController extends GetxController {
   }
 
   Future<void> cerrarSesion() async {
+    Notificaciones().eliminarToken(_storage.read('uid'));
     await _auth.signOut();
     await _storage.erase();
-    Get.offAll(() => FondoInicioSesion(widget_child: LoginScreen()), transition: Transition.circularReveal);
+    Get.offAll(
+      () => FondoInicioSesion(widget_child: LoginScreen()),
+      transition: Transition.circularReveal,
+    );
   }
 
   bool estaAutenticado() {
@@ -72,8 +77,20 @@ class AuthController extends GetxController {
       nombre: _storage.read('nombre') ?? '',
       apellido: _storage.read('apellido') ?? '',
       correo: _storage.read('correo') ?? '',
-      campus: _storage.read('campus') ?? '',
-      carrera: _storage.read('carrera') ?? '',
+      campus: _storage.read('campus') != null
+          ? FirebaseFirestore.instance
+                .collection('Campus')
+                .doc(
+                  _storage.read('campus'),
+                ) // ya es DocumentReference<Object?>
+          : null,
+      carrera: (_storage.read('carrera') as List<dynamic>? ?? [])
+          .map(
+            (id) => FirebaseFirestore.instance
+                .collection('Carreras')
+                .doc(id.toString()),
+          )
+          .toList(),
       cuenta: _storage.read('cuenta') ?? '',
       rol: _storage.read('rol') ?? '',
     );

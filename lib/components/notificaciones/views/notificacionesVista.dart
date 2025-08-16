@@ -1,49 +1,26 @@
 import 'package:flutter/material.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:uth_request_flutter_application/components/notificaciones/modelo/notificaciones_model.dart';
 import 'package:uth_request_flutter_application/components/notificaciones/views/notificaciones_card.dart';
 import 'package:uth_request_flutter_application/components/utils/color.dart';
-import 'package:uth_request_flutter_application/components/utils/string.dart';
+import 'package:uth_request_flutter_application/components/utils/notificaciones.dart';
 
 class Notificacionesvista extends StatelessWidget {
   const Notificacionesvista({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final List<NotificacionesModel> lista = [
-      NotificacionesModel(
-        atencion,
-        notificacionMensaje,
-        clase,
-        estadoLleno,
-        fecha,
-        Icons.check_circle,
-      ),
-      NotificacionesModel(
-        administracion,
-        notificacionMensaje,
-        clase,
-        estadoAceptado,
-        fecha,
-        Icons.sentiment_satisfied,
-      ),
-      NotificacionesModel(
-        administracion,
-        notificacionMensaje,
-        clase,
-        estadoDenegado,
-        fecha,
-        Icons.sentiment_dissatisfied,
-      ),
-    ];
+    final uid = GetStorage().read('uid');
+
     return Scaffold(
       backgroundColor: AppColors.onBackgroundDefault,
       body: SingleChildScrollView(
         child: Column(
           children: [
-            SizedBox(height: 5),
+            const SizedBox(height: 5),
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
-              children: [
+              children: const [
                 SizedBox(width: 14),
                 Text(
                   'Notificaciones',
@@ -51,17 +28,38 @@ class Notificacionesvista extends StatelessWidget {
                 ),
               ],
             ),
-            ListView(
-              shrinkWrap: true,
-              physics: NeverScrollableScrollPhysics(),
-              children: lista
-                  .map((notificacion) =>
-                      NotificacionesCard(notificacion: notificacion))
-                  .toList(),
+            const SizedBox(height: 10),
+
+            // Aquí usamos FutureBuilder
+            FutureBuilder<List<NotificacionesModel>>(
+              future: uid != null
+                  ? Notificaciones().obtenerNotificacionesPorUid(uid)
+                  : Future.value([]),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+                if (snapshot.hasError) {
+                  return const Center(child: Text("Error al cargar notificaciones"));
+                }
+                if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                  return const Center(child: Text("No tienes notificaciones"));
+                }
+
+                final notificaciones = snapshot.data!;
+                return ListView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: notificaciones.length,
+                  itemBuilder: (context, index) {
+                    return NotificacionesCard(notificacion: notificaciones[index]);
+                  },
+                );
+              },
             ),
           ],
         ),
-      )
+      ),
     );
   }
 }

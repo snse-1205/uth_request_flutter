@@ -1,6 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get_navigation/src/root/get_material_app.dart';
+
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:uth_request_flutter_application/components/auth/login/controllers/inicio_sesion_controller.dart';
@@ -9,15 +9,20 @@ import 'package:uth_request_flutter_application/components/auth/register/control
 import 'package:uth_request_flutter_application/components/pages/fondo_inicio_sesion.dart';
 import 'package:uth_request_flutter_application/components/pages/home_page.dart';
 import 'package:uth_request_flutter_application/components/utils/color.dart';
+import 'package:uth_request_flutter_application/temas/controllers/comentarios_controller.dart';
+import 'package:uth_request_flutter_application/temas/controllers/temas_controller.dart';
+import 'package:uth_request_flutter_application/components/utils/notificaciones.dart';
 
 void main() async {
   await GetStorage.init();
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+
   runApp(MainApp());
   Get.put(AuthController(), permanent: true);
   Get.put(RegisterController(), permanent: true);
-
+  Get.put(PostController(), permanent: true);
+  Get.put(CommentController(), permanent: true);
 }
 
 class MainApp extends StatelessWidget {
@@ -26,6 +31,15 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    void mostrarMensaje() {}
+
+    var uid = storage.read('uid');
+    if (uid != null) {
+      Notificaciones().guardarToken(uid);
+    } else {
+      print("UID no encontrado en el storage");
+    }
+
     final hayData = storage.read("logueado") ?? false;
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,

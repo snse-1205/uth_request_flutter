@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:uth_request_flutter_application/components/componentsAdmin/panelControl/views/panelControl.dart';
 import 'package:uth_request_flutter_application/components/notificaciones/views/notificacionesVista.dart';
 import 'package:uth_request_flutter_application/components/peticiones/views/createRequest.dart';
 import 'package:uth_request_flutter_application/components/shared/menu_drawer.dart';
@@ -9,7 +9,9 @@ import 'package:uth_request_flutter_application/components/shared/navigation_con
 import 'package:uth_request_flutter_application/components/shared/peticiones_navBar.dart';
 import 'package:uth_request_flutter_application/components/shared/temas_navBar.dart';
 import 'package:uth_request_flutter_application/components/utils/color.dart';
+import 'package:uth_request_flutter_application/components/utils/notificaciones.dart';
 import 'package:uth_request_flutter_application/components/utils/string.dart';
+import 'package:uth_request_flutter_application/temas/views/crearTema.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -25,25 +27,31 @@ class _HomePageState extends State<HomePage> {
 
   String nombre = '';
   String apellido = '';
-  String campus = '';
-  String carrera = '';
   String cuenta = '';
   String rol = '';
 
-  final List<Widget> paginas = [
-    PeticionesPage(),
-    TemasPage(),
-    Notificacionesvista(),
-  ];
+  late List<Widget> paginas;
 
   @override
   void initState() {
     super.initState();
     _obtenerDatosStorage();
+    var uid = GetStorage().read('uid');
+    if (uid != null) {
+      Notificaciones().guardarToken(uid);
+    } else {
+      print("UID no encontrado en el storage");
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    paginas = [PeticionesPage(), TemasPage(), Notificacionesvista()];
+
+    if (rol.toLowerCase() == "administrador") {
+      paginas.add(PanelControl());
+    }
+
     return Obx(
       () => Scaffold(
         appBar: AppBar(
@@ -78,6 +86,7 @@ class _HomePageState extends State<HomePage> {
         drawer: MenuDrawer(),
 
         bottomNavigationBar: BottomNavigationBar(
+          type: BottomNavigationBarType.fixed,
           backgroundColor: AppColors.primary,
           selectedItemColor: AppColors.selectedItem,
           unselectedItemColor: AppColors.nonSelectedItem,
@@ -100,11 +109,17 @@ class _HomePageState extends State<HomePage> {
               activeIcon: Icon(Icons.campaign),
               label: anuncios,
             ),
+            if (rol.toLowerCase() == "administrador")
+              BottomNavigationBarItem(
+                icon: Icon(Icons.admin_panel_settings_outlined),
+                activeIcon: Icon(Icons.admin_panel_settings),
+                label: "Gestiones",
+              ),
           ],
 
           onTap: navController.changePage,
         ),
-        floatingActionButton: navController.selectedIndex.value == 2
+        floatingActionButton: navController.selectedIndex.value == 2 || navController.selectedIndex.value == 3
             ? null
             : Column(
                 mainAxisSize: MainAxisSize.min,
@@ -127,7 +142,14 @@ class _HomePageState extends State<HomePage> {
                         ),
                         FloatingActionButton(
                           heroTag: 'CREAR TEMA',
-                          onPressed: () {},
+                          onPressed: () {
+                            Get.to(
+                              CrearTemaPage(
+                                comentario: false,
+                              ),
+                              transition: Transition.rightToLeftWithFade,
+                            );
+                          },
                           backgroundColor: AppColors.primaryVariant,
                           mini: true,
                           shape: CircleBorder(),
@@ -152,7 +174,10 @@ class _HomePageState extends State<HomePage> {
                         FloatingActionButton(
                           heroTag: 'CREAR PETICION',
                           onPressed: () {
-                            Get.to(CreateRequest(), transition: Transition.rightToLeftWithFade);
+                            Get.to(
+                              CreateRequest(),
+                              transition: Transition.rightToLeftWithFade,
+                            );
                           },
                           backgroundColor: AppColors.primaryVariant,
                           mini: true,
@@ -170,7 +195,10 @@ class _HomePageState extends State<HomePage> {
                     heroTag: 'MAS',
                     onPressed: () {
                       if (navController.selectedIndex.value == 0) {
-                        Get.to(CreateRequest(), transition: Transition.rightToLeftWithFade);
+                        Get.to(
+                          CreateRequest(),
+                          transition: Transition.rightToLeftWithFade,
+                        );
                       } else {
                         setState(() {
                           showExtraButtons = !showExtraButtons;
@@ -201,8 +229,6 @@ class _HomePageState extends State<HomePage> {
     setState(() {
       nombre = storage.read('nombre') ?? '';
       apellido = storage.read('apellido') ?? '';
-      campus = storage.read('campus') ?? '';
-      carrera = storage.read('carrera') ?? '';
       cuenta = storage.read('cuenta') ?? '';
       rol = storage.read('rol') ?? '';
     });

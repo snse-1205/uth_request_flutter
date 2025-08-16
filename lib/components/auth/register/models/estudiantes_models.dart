@@ -1,9 +1,12 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class EstudianteModel {
   final String nombre;
   final String apellido;
   final String correo;
-  final String campus;
-  final String carrera;
+  final DocumentReference? campus;                // referencia
+  final List<DocumentReference> carrera;         // array de referencias
+  final List<DocumentReference>? clasesCursadas; // array de referencias opcional
   final String cuenta;
   final String rol;
 
@@ -11,10 +14,11 @@ class EstudianteModel {
     required this.nombre,
     required this.apellido,
     required this.correo,
-    required this.campus,
+    this.campus,
     required this.carrera,
+    this.clasesCursadas,
     required this.cuenta,
-    required this.rol
+    required this.rol,
   });
 
   factory EstudianteModel.fromMap(Map<String, dynamic> map) {
@@ -22,10 +26,17 @@ class EstudianteModel {
       nombre: map['nombre'] ?? '',
       apellido: map['apellido'] ?? '',
       correo: map['correo'] ?? '',
-      campus: map['campus'] ?? '',
-      carrera: map['carrera'] ?? '',
+      campus: map['campus'] as DocumentReference,
+      carrera: (map['carrera'] as List)
+          .map((e) => e as DocumentReference)
+          .toList(),
+      clasesCursadas: map['clasesCursadas'] != null
+          ? (map['clasesCursadas'] as List)
+              .map((e) => e as DocumentReference)
+              .toList()
+          : null,
       cuenta: map['cuenta'] ?? '',
-      rol: map['rol'] ?? ''
+      rol: map['rol'] ?? '',
     );
   }
 
@@ -36,8 +47,9 @@ class EstudianteModel {
       'correo': correo,
       'campus': campus,
       'carrera': carrera,
+      'clasesCursadas': clasesCursadas ?? [],
       'cuenta': cuenta,
-      'rol': rol
+      'rol': rol,
     };
   }
 }

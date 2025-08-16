@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:uth_request_flutter_application/components/peticiones/views/peticiones_community_view.dart';
 import 'package:uth_request_flutter_application/components/utils/color.dart';
 import 'package:uth_request_flutter_application/components/utils/string.dart';
+import 'package:uth_request_flutter_application/temas/views/comunidad_vista.dart';
 
 class TemasPage extends StatelessWidget {
   const TemasPage({super.key});
@@ -37,9 +38,7 @@ class TemasPage extends StatelessWidget {
         ),
         body: const TabBarView(
           children: [
-            Center(
-              child: Text('Pagina de Temas :)', style: TextStyle(fontSize: 20)),
-            ),
+            ListaTemasPage(),
             PeticionesCommunityView(),
           ],
         ),

@@ -7,34 +7,6 @@ class OtrasPeticionesView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.onBackgroundDefault,
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            SizedBox(height: 5),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                SizedBox(width: 14),
-                Text(
-                  'Peticiones en la que Estoy de Acuerdo',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                ),
-              ],
-            ),
-            ListView(
-              shrinkWrap: true,
-              physics: NeverScrollableScrollPhysics(),
-              children: [
-                CardPeticiones(community: false, deacuerdo: true),
-                CardPeticiones(community: false, deacuerdo: true),
-                CardPeticiones(community: false, deacuerdo: true),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
+    return Center(child: Text("Hola"),);
   }
 }

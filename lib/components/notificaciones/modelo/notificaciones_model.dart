@@ -1,36 +1,38 @@
-import 'package:flutter/material.dart';
-
 class NotificacionesModel {
-  String _titulo = "";
-  String _mensaje = "";
-  String _clase = "";
-  String _estado = "";
-  String _fecha = "";
-  IconData _icono;
+  final String titulo;
+  final String mensaje;
+  final String fecha;
 
+  NotificacionesModel({
+    required this.titulo,
+    required this.mensaje,
+    required this.fecha,
+  });
 
-  NotificacionesModel(this._titulo,this._mensaje,this._clase,this._estado,this._fecha, this._icono);
+  factory NotificacionesModel.fromMap(Map<String, dynamic> map) {
+    return NotificacionesModel(
+      titulo: map['titulo'] ?? '',
+      mensaje: map['contenido'] ?? '',
+      fecha: map['fecha'] != null
+          ? map['fecha'].toString() // Si es Timestamp se convierte a String
+          : '',
+    );
+  }
 
-  String get titulo => _titulo;
-  void setTitulo(a){_titulo = a;}
+  factory NotificacionesModel.fromFirestore(
+      Map<String, dynamic> data, String docId) {
+    return NotificacionesModel(
+      titulo: data['titulo'] ?? '',
+      mensaje: data['contenido'] ?? '',
+      fecha: data['fecha'] != null ? data['fecha'].toString() : '',
+    );
+  }
 
-  String get mensaje => _mensaje;
-  void setMensaje(a){_mensaje = a;}
-
-  String get clase => _clase;
-  void setClase(a){_clase = a;}
-
-
-  String get estado => _estado;
-  void setEstado(a){_estado = a;}
-  
-   String get fecha => _fecha;
-  void setFecha(a){_fecha = a;}
-
-  
-   IconData get icono => _icono;
-  void setIcono(a){_icono = a;}
-
+  Map<String, dynamic> toMap() {
+    return {
+      'titulo': titulo,
+      'contenido': mensaje,
+      'fecha': fecha,
+    };
+  }
 }
- 
-  

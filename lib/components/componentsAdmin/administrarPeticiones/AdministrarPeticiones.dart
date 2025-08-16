@@ -108,7 +108,7 @@ class _AdminPeticionCard extends StatelessWidget {
                 ),
                 const SizedBox(width: 8),
                 ElevatedButton.icon(
-                  onPressed: () => ctl.updateStatus(p.id, "aceptada"),
+                  onPressed: () => ctl.updateStatus(p.id, "disponible"),
                   icon: const Icon(Icons.check),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.green,

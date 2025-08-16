@@ -1,53 +1,59 @@
+// components/Peticiones/Models/createRequestModel.dart
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-/// Item mostrado en el dropdown (clase disponible para solicitar)
-class ClaseItem {
-  final String id;                 // id del doc en ClasesPorCarrera (== id de la clase)
-  final String nombre;             // campo 'nombre'
-  final DocumentReference? requisitoRef; // campo 'requisito' (/Clases/{id} o null)
-
-  ClaseItem({
-    required this.id,
-    required this.nombre,
-    required this.requisitoRef,
-  });
-}
-
-/// Payload para crear la petición
 class PeticionCreate {
-  final String tipo;           // 'APERTURA DE CLASE'
-  final String claseId;        // id de la clase seleccionada (ClasesPorCarrera/{id})
-  final String modalidad;      // 'Presencial' | 'Presencial-ZOOM'
-  final String dia;            // 'Semana lunes-jueves' | 'Fin de semana'
-  final String horaInicio;     // 'HH:mm'
-  final String horaFin;        // 'HH:mm'
-  final String estudianteId;   // id del doc en Estudiantes/{id}
-  final String estado;         // 'espera aprobación'
-  final Timestamp dateCreate;  // server time o ahora
+  final String uid;
+  final String tipo;
+  final String claseId;       // código de la clase (doc id en ClasesPorCarrera)
+  final String nombreClase;   // nombre legible para mostrar en UI
+  final String modalidad;
+  final String dia;
+  final String horaInicio;
+  final String horaFin;
+  final int meta;
+  final Timestamp dateCreate;
 
   PeticionCreate({
+    required this.uid,
     required this.tipo,
     required this.claseId,
+    required this.nombreClase,
     required this.modalidad,
     required this.dia,
     required this.horaInicio,
     required this.horaFin,
-    required this.estudianteId,
-    required this.estado,
+    required this.meta,
     required this.dateCreate,
   });
 
   Map<String, dynamic> toMap() {
     return {
-      'tipo': tipo,
-      'claseId': claseId,
-      'modalidad': modalidad,
-      'dia': dia,
-      'horaInicio': horaInicio,
-      'horaFin': horaFin,
-      'estudianteId': estudianteId,
-      'estado': estado,
-      'dateCreate': dateCreate,
+      'uid'        : uid,
+      'tipo'       : tipo,
+      'classId'    : claseId,
+      'nombreClase': nombreClase,       // ← para no volver a buscar
+      'modalidad'  : modalidad,
+      'dia'        : dia,
+      'horaInicio' : horaInicio,
+      'horaFin'    : horaFin,
+      'meta'       : meta,
+      'status'     : 'pendiente',       // al crear
+      'dateCreate' : dateCreate,
+      'acuerdos'   : <String>[],
+      // 'fechaLimite': ... (si lo usas)
+      // 'periodo'    : ... (si lo usas)
     };
   }
+}
+
+class ClaseItem {
+  final String id;
+  final String nombre;
+  final DocumentReference? requisitoRef;
+
+  ClaseItem({
+    required this.id,
+    required this.nombre,
+    this.requisitoRef,
+  });
 }

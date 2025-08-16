@@ -41,7 +41,6 @@ class MainApp extends StatelessWidget {
     }
 
     final hayData = storage.read("logueado") ?? false;
-
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       home: hayData

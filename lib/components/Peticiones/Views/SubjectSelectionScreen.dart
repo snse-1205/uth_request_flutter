@@ -1,3 +1,4 @@
+// components/Peticiones/Views/subjectSelectionScreen.dart
 import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -14,24 +15,22 @@ class _SubjectSelectionScreenState extends State<SubjectSelectionScreen> {
   late Future<List<_ClaseOption>> _future;
 
   // Colecciones/campos según tu esquema
-  static const String studentsCol = 'estudiantes';
-  static const String classesPerCareerCol = 'ClasesPorCarrera';
-  static const String fCareers = 'carrera';       // List<DocumentReference>
-  static const String fTaken   = 'clasesCursadas';// List<DocumentReference> -> /ClasesPorCarrera/{idClase}
-  static const String fCareersIn = 'carreras';    // List<DocumentReference> (en ClasesPorCarrera)
-  static const String fRequisito = 'requisito';   // DocumentReference? -> /Clases/{idReq}
-  static const String fNombre    = 'nombre';      // String (en ClasesPorCarrera)
+  static const String studentsCol        = 'estudiantes';     // AJUSTA si tu colección real es 'Estudiantes'
+  static const String classesPerCareerCol= 'ClasesPorCarrera';
+  static const String fCareers           = 'carrera';         // List<DocumentReference>
+  static const String fTaken             = 'clasesCursadas';  // List<DocumentReference> -> /ClasesPorCarrera/{idClase}
+  static const String fCareersIn         = 'carreras';        // List<DocumentReference> (en ClasesPorCarrera)
+  static const String fRequisito         = 'requisito';       // DocumentReference? -> /Clases/{idReq}
+  static const String fClaseRef          = 'clase';           // DocumentReference -> /Clases/{id}  *** AQUI ESTA EL NOMBRE ***
+  // static const String fNombre         = 'nombre';          // (NO existe directo en ClasesPorCarrera)
 
   @override
-  @override
-void initState() {
-  super.initState();
-  final storage = GetStorage();
-  // aquí guardas la cuenta del estudiante
-  final cuenta = (storage.read('cuenta') ?? '').toString().trim();
-  _future = _loadAvailableClasses(cuenta);
-}
-
+  void initState() {
+    super.initState();
+    final storage = GetStorage();
+    final cuenta = (storage.read('cuenta') ?? '').toString().trim();
+    _future = _loadAvailableClassesByCuenta(cuenta);
+  }
 
   Iterable<List<T>> _chunks<T>(List<T> list, int size) sync* {
     for (var i = 0; i < list.length; i += size) {
@@ -39,88 +38,100 @@ void initState() {
     }
   }
 
-  Future<List<_ClaseOption>> _loadAvailableClasses(String studentCuenta) async {
-  if (studentCuenta.isEmpty) {
-    throw 'No se encontró la cuenta del estudiante en el almacenamiento.';
-  }
-
-  final db = FirebaseFirestore.instance;
-
-  // 1) Buscar el estudiante por el CAMPO "cuenta", no por id de documento
-  final stuSnap = await db
-      .collection(studentsCol)
-      .where('cuenta', isEqualTo: studentCuenta)
-      .limit(1)
-      .get();
-
-  if (stuSnap.docs.isEmpty) {
-    // no hay estudiante con esa cuenta
-    return [];
-  }
-
-  final sdata = stuSnap.docs.first.data();
-
-  // Carreras (List<DocumentReference>)
-  final careerRefs = (sdata[fCareers] as List?)
-          ?.where((e) => e is DocumentReference)
-          .cast<DocumentReference>()
-          .toList() ??
-      <DocumentReference>[];
-
-  // ids de clases cursadas (id de doc en ClasesPorCarrera)
-  final takenIds = ((sdata[fTaken] as List?) ?? [])
-      .where((e) => e is DocumentReference)
-      .map((e) => (e as DocumentReference).id)
-      .toSet();
-
-  if (careerRefs.isEmpty) return [];
-
-  // 2) Clases por carrera: arrayContainsAny (máx 10)
-  final allDocs = <QueryDocumentSnapshot<Map<String, dynamic>>>[];
-  for (final ch in _chunks(careerRefs, 10)) {
-    final snap = await db
-        .collection(classesPerCareerCol)
-        .where(fCareersIn, arrayContainsAny: ch)
-        .get();
-    allDocs.addAll(snap.docs);
-  }
-
-  // 3) Filtrado: no cursadas + requisito cumplido (o sin requisito)
-  final out = <_ClaseOption>[];
-  for (final d in allDocs) {
-    final data = d.data();
-    final classId = d.id;
-
-    // excluir si ya cursada
-    if (takenIds.contains(classId)) continue;
-
-    final reqRef = data[fRequisito];
-
-    // sin requisito → mostrar
-    if (reqRef == null) {
-      out.add(_ClaseOption(
-        id: classId,
-        nombre: (data[fNombre] ?? classId).toString(),
-      ));
-      continue;
+  Future<List<_ClaseOption>> _loadAvailableClassesByCuenta(String cuenta) async {
+    if (cuenta.isEmpty) {
+      throw 'No se encontró la cuenta del estudiante en el almacenamiento.';
     }
 
-    // con requisito → mostrar solo si el requisito está en takenIds
-    if (reqRef is DocumentReference) {
-      final reqClassId = reqRef.id; // /Clases/{idReq}
-      if (takenIds.contains(reqClassId)) {
-        out.add(_ClaseOption(
-          id: classId,
-          nombre: (data[fNombre] ?? classId).toString(),
-        ));
+    final db = FirebaseFirestore.instance;
+
+    // 1) Estudiante por campo "cuenta"
+    final stuSnap = await db
+        .collection(studentsCol)
+        .where('cuenta', isEqualTo: cuenta)
+        .limit(1)
+        .get();
+
+    if (stuSnap.docs.isEmpty) return [];
+
+    final sdata = stuSnap.docs.first.data();
+    final careerRefs = (sdata[fCareers] as List?)
+            ?.where((e) => e is DocumentReference)
+            .cast<DocumentReference>()
+            .toList() ??
+        <DocumentReference>[];
+
+    // ids de clases cursadas (id de doc en ClasesPorCarrera)
+    final takenIds = ((sdata[fTaken] as List?) ?? [])
+        .where((e) => e is DocumentReference)
+        .map((e) => (e as DocumentReference).id)
+        .toSet();
+
+    if (careerRefs.isEmpty) return [];
+
+    // 2) Traer ClasesPorCarrera para las carreras del estudiante
+    final allDocs = <QueryDocumentSnapshot<Map<String, dynamic>>>[];
+    for (final ch in _chunks(careerRefs, 10)) {
+      final snap = await db
+          .collection(classesPerCareerCol)
+          .where(fCareersIn, arrayContainsAny: ch)
+          .get();
+      allDocs.addAll(snap.docs);
+    }
+
+    // 2.1 Reunir todos los DocumentReference a /Clases/{id} para resolver nombres en un solo batch
+    final claseRefs = <DocumentReference>{};
+    for (final d in allDocs) {
+      final data = d.data();
+      final ref = data[fClaseRef];
+      if (ref is DocumentReference) {
+        claseRefs.add(ref);
       }
     }
+
+    // Resolver nombres de /Clases/{id}
+    final nombreByRefPath = <String, String>{};
+    await Future.wait(claseRefs.map((ref) async {
+      try {
+        final doc = await ref.get();
+        final nombre = (doc.data() as Map<String, dynamic>?)?['nombre']?.toString();
+        nombreByRefPath[ref.path] = nombre ?? ref.id; // fallback a id si no hay nombre
+      } catch (_) {
+        nombreByRefPath[ref.path] = ref.id;
+      }
+    }));
+
+    // 3) Filtrado: no cursadas + requisito cumplido (o sin requisito)
+    final out = <_ClaseOption>[];
+    for (final d in allDocs) {
+      final data = d.data();
+      final classId = d.id; // *** ESTE es el CÓDIGO que vas a guardar en la petición ***
+
+      if (takenIds.contains(classId)) continue;
+
+      // nombre desde la ref /Clases/{id}
+      String nombre = classId; // fallback
+      final claseRef = data[fClaseRef];
+      if (claseRef is DocumentReference) {
+        nombre = nombreByRefPath[claseRef.path] ?? claseRef.id;
+      }
+
+      final reqRef = data[fRequisito];
+
+      if (reqRef == null) {
+        out.add(_ClaseOption(id: classId, nombre: nombre));
+        continue;
+      }
+      if (reqRef is DocumentReference) {
+        if (takenIds.contains(reqRef.id)) {
+          out.add(_ClaseOption(id: classId, nombre: nombre));
+        }
+      }
+    }
+
+    out.sort((a, b) => a.nombre.compareTo(b.nombre));
+    return out;
   }
-
-  out.sort((a, b) => a.nombre.compareTo(b.nombre));
-  return out;
-}
-
 
   @override
   Widget build(BuildContext context) {
@@ -142,15 +153,17 @@ void initState() {
           }
           final options = snap.data ?? [];
           if (options.isEmpty) {
-            return const Center(child: Text('No hay clases disponibles para solicitar.'));
+            return const Center(
+              child: Text('No hay clases disponibles para solicitar.'),
+            );
           }
 
           return ListView.separated(
             padding: const EdgeInsets.all(16),
             itemCount: options.length,
-            separatorBuilder: (context, index) => const SizedBox(height: 12),
-            itemBuilder: (context, index) {
-              final item = options[index];
+            separatorBuilder: (_, __) => const SizedBox(height: 12),
+            itemBuilder: (_, i) {
+              final item = options[i];
               return Card(
                 color: AppColors.onSurface,
                 elevation: 2,
@@ -158,18 +171,13 @@ void initState() {
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: ListTile(
-                  title: Text(
-                    item.nombre,
-                    style: const TextStyle(color: Colors.black),
+                  title: Text(item.nombre, style: const TextStyle(color: Colors.black)),
+                  subtitle: Text(item.id, style: const TextStyle(color: Colors.black54)),
+                  // devolvemos {codigo, nombre}
+                  onTap: () => Navigator.pop<Map<String, String>>(
+                    context,
+                    {'id': item.id, 'nombre': item.nombre},
                   ),
-                  subtitle: Text(
-                    item.id, // muestra el id para claridad
-                    style: const TextStyle(color: Colors.black54),
-                  ),
-                  onTap: () {
-                    // devolvemos el id de la clase
-                    Navigator.pop(context, item.id);
-                  },
                 ),
               );
             },

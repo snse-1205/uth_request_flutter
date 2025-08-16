@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:uth_request_flutter_application/components/componentsAdmin/administrarPeticiones/AdministrarPeticiones.dart';
 import 'package:uth_request_flutter_application/components/componentsAdmin/catalogos/Views/crudClases.dart';
 import 'package:uth_request_flutter_application/components/componentsAdmin/catalogos/views/crudCampus.dart';
 import 'package:uth_request_flutter_application/components/componentsAdmin/catalogos/views/crudCarreras.dart';
@@ -27,6 +28,11 @@ class _PanelItem {
 class _PanelControlState extends State<PanelControl> {
   final List<_PanelItem> _items = [
     // 👇 Ejemplos de navegación con GetX:
+     _PanelItem(
+      label: 'Administrar peticiones',
+      icon: Icons.article_outlined,
+      onTap: () => Get.to(() => const AdminPendientesView()),
+    ),
     _PanelItem(
       label: 'Campus',
       icon: Icons.location_city,
@@ -39,11 +45,6 @@ class _PanelControlState extends State<PanelControl> {
       onTap: () => Get.to(() => const CrudCarreras()),
     ),
     _PanelItem(
-      label: 'Profesores',
-      icon: Icons.person,
-      onTap: () => Get.to(() => const ProfesoresPage()),
-    ),
-    _PanelItem(
       label: 'Estudiantes',
       icon: Icons.groups,
       onTap: () => Get.to(() => const CrudUsuarios()),
@@ -52,11 +53,6 @@ class _PanelControlState extends State<PanelControl> {
       label: 'Clases',
       icon: Icons.class_,
       onTap: () => Get.to(() => const CrudClases()),
-    ),
-    _PanelItem(
-      label: 'Ajustes',
-      icon: Icons.settings,
-      onTap: () => Get.to(() => const AjustesPage()),
     ),
   ];
 

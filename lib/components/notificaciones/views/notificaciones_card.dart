@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:uth_request_flutter_application/components/notificaciones/modelo/notificaciones_model.dart';
 import 'package:uth_request_flutter_application/components/utils/color.dart';
@@ -41,7 +42,7 @@ class NotificacionesCard extends StatelessWidget {
 
             // Fecha
             Text(
-              notificacion.fecha,
+              _formatDateFromString(notificacion.fecha),
               style: TextStyle(
                 color: AppColors.onPrimaryText.withOpacity(0.6),
                 fontSize: 12,
@@ -52,4 +53,23 @@ class NotificacionesCard extends StatelessWidget {
       ),
     );
   }
+
+  String _formatDateFromString(String fechaStr) {
+  // Convertir String a DateTime primero
+  DateTime dateTime = DateTime.tryParse(fechaStr) ?? DateTime.now();
+
+  // Convertir DateTime a Timestamp
+  Timestamp ts = Timestamp.fromDate(dateTime);
+
+  // Volver a DateTime desde Timestamp
+  DateTime d = ts.toDate();
+
+  // Formatear
+  final dd = d.day.toString().padLeft(2, '0');
+  final mm = d.month.toString().padLeft(2, '0');
+  final yy = d.year.toString();
+
+  return '$dd/$mm/$yy';
+}
+
 }

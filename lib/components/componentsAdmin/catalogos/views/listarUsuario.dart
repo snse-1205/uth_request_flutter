@@ -74,7 +74,6 @@ class ListarUsuariosTab extends StatelessWidget {
                     style: const TextStyle(color: AppColors.onSecondaryText),
                   ),
                   isThreeLine: true,
-                  trailing: const Icon(Icons.chevron_right, color: AppColors.onSecondaryText),
                   onTap: () {
                     // futuro: navegar a detalle/editar usuario
                   },

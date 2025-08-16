@@ -51,18 +51,11 @@ class CommentCard extends StatelessWidget {
                             ),
                         ],
                       ),
-                      Text(
-                        comment.carrera,
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: AppColors.primary,
-                        ),
-                      ),
                     ],
                   ),
                 ),
                 Text(
-                  comment.fechaCreacion,
+                 _fmtDate(comment.fechaCreacion),
                   style: TextStyle(
                     color: AppColors.onSecondaryText,
                     fontSize: 12,
@@ -77,5 +70,13 @@ class CommentCard extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  String _fmtDate(String a) {
+    DateTime d = DateTime.tryParse(a) ?? DateTime.now();
+    final dd = d.day.toString().padLeft(2, '0');
+    final mm = d.month.toString().padLeft(2, '0');
+    final yy = d.year.toString();
+    return '$dd/$mm/$yy';
   }
 }

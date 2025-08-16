@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:uth_request_flutter_application/components/Peticiones/Controllers/GetRequestController.dart';
-import 'package:uth_request_flutter_application/components/Peticiones/Models/getRequestModel.dart';
 import 'package:uth_request_flutter_application/components/utils/color.dart';
 import 'package:uth_request_flutter_application/components/peticiones/views/card_peticiones.dart';
+
+// Usa el controller correcto (donde definiste streamPeticionesCommunity y PetitionModel)
+import 'package:uth_request_flutter_application/components/Peticiones/Controllers/controller.dart';
 
 class PeticionesCommunityView extends StatelessWidget {
   const PeticionesCommunityView({
@@ -17,7 +18,7 @@ class PeticionesCommunityView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ctl = Get.put(PeticionesController());
+    final ctl = Get.put(ClassRequestController()); // <<--- este controller
 
     return Scaffold(
       backgroundColor: AppColors.onBackgroundDefault,
@@ -36,7 +37,7 @@ class PeticionesCommunityView extends StatelessWidget {
               ],
             ),
             StreamBuilder<List<PetitionModel>>(
-              stream: ctl.streamPeticiones(classId: classId),
+              stream: ctl.streamPeticionesCommunity(classId: classId), // <<--- este stream
               builder: (context, snap) {
                 if (snap.connectionState == ConnectionState.waiting) {
                   return const Padding(
@@ -68,12 +69,12 @@ class PeticionesCommunityView extends StatelessWidget {
 
                     return CardPeticiones(
                       petitionId: p.id,
-                      tipoPeticion: p.tipo,
-                      nombreClase: p.nombreClase,
-                      modalidad: p.modalidad,
-                      campus: p.campus,
-                      horario: p.horario,
-                      fechaLimite: p.fechaLimite,
+                      tipoPeticion: p.tipo.isEmpty ? 'APERTURA DE CLASE' : p.tipo,
+                      nombreClase: (p.nombreClase ?? '').isEmpty ? p.classId : p.nombreClase!,
+                      modalidad: p.modalidad.isEmpty ? 'Presencial' : p.modalidad,
+                      campus: p.campus ?? '',
+                      horario: p.horario ?? '${p.horaInicio} - ${p.horaFin}${p.dia.isNotEmpty ? ' • ${p.dia}' : ''}',
+                      fechaLimite: p.fechaLimite?.toDate(), // <<--- convierte Timestamp? a DateTime?
                       meta: p.meta,
                     );
                   },

@@ -1,6 +1,6 @@
 import 'package:get/get.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import '../models/comment_model.dart';
+import 'package:uth_request_flutter_application/temas/models/comment_model.dart';
 
 class CommentController extends GetxController {
   final FirebaseFirestore _db = FirebaseFirestore.instance;

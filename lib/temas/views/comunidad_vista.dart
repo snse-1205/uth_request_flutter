@@ -92,7 +92,6 @@ class ListaTemasPage extends StatelessWidget {
                         comentario: post.comentario,
                         fechaCreacion: post.fechaCreacion,
                         verificado: post.verificado,
-                        carrera: post.carrera,
                       );
                     },
                   );

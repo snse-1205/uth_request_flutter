@@ -6,7 +6,7 @@ import 'package:uth_request_flutter_application/components/notificaciones/views/
 import 'package:uth_request_flutter_application/components/peticiones/views/createRequest.dart';
 import 'package:uth_request_flutter_application/components/shared/menu_drawer.dart';
 import 'package:uth_request_flutter_application/components/shared/navigation_controller.dart';
-import 'package:uth_request_flutter_application/components/shared/peticiones_navBar.dart';
+import 'package:uth_request_flutter_application/components/peticiones/views/mis_peticiones_view.dart';
 import 'package:uth_request_flutter_application/components/shared/temas_navBar.dart';
 import 'package:uth_request_flutter_application/components/utils/color.dart';
 import 'package:uth_request_flutter_application/components/utils/notificaciones.dart';
@@ -46,7 +46,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    paginas = [PeticionesPage(), TemasPage(), Notificacionesvista()];
+    paginas = [MisPeticionesView(), TemasPage(), Notificacionesvista()];
 
     if (rol.toLowerCase() == "administrador") {
       paginas.add(PanelControl());

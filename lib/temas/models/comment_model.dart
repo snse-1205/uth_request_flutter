@@ -3,7 +3,6 @@ class CommentModel {
   String uid;
   String postId;
   String nombre;
-  String carrera;
   bool verificado;
   String mensaje;
   String fechaCreacion;
@@ -13,7 +12,6 @@ class CommentModel {
     required this.uid,
     required this.postId,
     required this.nombre,
-    required this.carrera,
     required this.verificado,
     required this.mensaje,
     required this.fechaCreacion,
@@ -34,7 +32,6 @@ class CommentModel {
       uid: map['uid'] ?? '',
       postId: map['postId'] ?? '',
       nombre: "${userData['nombre'] ?? ''} ${userData['apellido'] ?? ''}",
-      carrera: userData['carrera'] ?? '',
       verificado: userData['verificado'] ?? false,
       mensaje: map['mensaje'] ?? '',
       fechaCreacion: map['fechaCreacion'] ?? '',

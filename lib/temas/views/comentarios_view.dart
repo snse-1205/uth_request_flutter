@@ -19,7 +19,6 @@ class PostDetailPage extends StatelessWidget {
   final bool comentario;
   final bool verificado;
   final String fechaCreacion;
-  final String carrera;
 
   PostDetailPage({
     super.key,
@@ -33,7 +32,6 @@ class PostDetailPage extends StatelessWidget {
     required this.comentario,
     required this.verificado,
     required this.fechaCreacion,
-    required this.carrera,
   });
 
   final CommentController commentController = Get.find();
@@ -64,7 +62,6 @@ class PostDetailPage extends StatelessWidget {
             comentario: comentario,
             fechaCreacion: fechaCreacion,
             verificado: verificado,
-            carrera: carrera,
           ),
           Divider(color: AppColors.onLineDivider),
 
@@ -159,7 +156,6 @@ class PostDetailPage extends StatelessWidget {
                       uid: uid,
                       postId: postId,
                       nombre: nombre,
-                      carrera: '',
                       verificado: false,
                       mensaje: _commentController.text.trim(),
                       fechaCreacion: DateTime.now().toString(),

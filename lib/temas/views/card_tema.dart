@@ -14,7 +14,6 @@ class CardTema extends StatelessWidget {
   final bool comentario;
   final bool verificado;
   final String fechaCreacion;
-  final String carrera;
 
   CardTema({
     super.key,
@@ -27,7 +26,6 @@ class CardTema extends StatelessWidget {
     required this.comentario,
     required this.verificado,
     required this.fechaCreacion,
-    required this.carrera,
   });
 
   final PostController postController = Get.find();
@@ -78,13 +76,6 @@ class CardTema extends StatelessWidget {
                         ],
                       ),
                       SizedBox(height: 2),
-                      Text(
-                        carrera,
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: AppColors.primary,
-                        ),
-                      ),
                     ],
                   ),
                 ),
@@ -109,7 +100,7 @@ class CardTema extends StatelessWidget {
             // --- Fecha ---
             if (principal)
               Text(
-                fechaCreacion,
+                _fmtDate(fechaCreacion),
                 style: TextStyle(
                   color: AppColors.onSecondaryText,
                   fontSize: 12,
@@ -165,8 +156,7 @@ class CardTema extends StatelessWidget {
                         principal: principal,
                         comentario: comentario,
                         verificado: verificado,
-                        fechaCreacion: fechaCreacion,
-                        carrera: carrera,
+                        fechaCreacion: fechaCreacion
                       ),
                       transition: Transition.downToUp,
                     );
@@ -177,13 +167,20 @@ class CardTema extends StatelessWidget {
                     color: AppColors.onSecondaryText,
                   ),
                 ),
-                SizedBox(width: 4),
-                Text('$comentarios'),
+                SizedBox(width: 6),
               ],
             ),
           ],
         ),
       ),
     );
+  }
+
+  String _fmtDate(String a) {
+    DateTime d = DateTime.tryParse(a) ?? DateTime.now();
+    final dd = d.day.toString().padLeft(2, '0');
+    final mm = d.month.toString().padLeft(2, '0');
+    final yy = d.year.toString();
+    return '$dd/$mm/$yy';
   }
 }

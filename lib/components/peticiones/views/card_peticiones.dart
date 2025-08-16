@@ -30,8 +30,12 @@ class CardPeticiones extends StatelessWidget {
   Widget build(BuildContext context) {
     final ctl = Get.find<PeticionesController>();
 
-    final safeTipo = (tipoPeticion.isEmpty) ? 'datos por agregar' : tipoPeticion;
-    final safeNombre = (nombreClase.isEmpty) ? 'datos por agregar' : nombreClase;
+    final safeTipo = (tipoPeticion.isEmpty)
+        ? 'datos por agregar'
+        : tipoPeticion;
+    final safeNombre = (nombreClase.isEmpty)
+        ? 'datos por agregar'
+        : nombreClase;
     final safeModalidad = (modalidad.isEmpty) ? 'datos por agregar' : modalidad;
     final safeCampus = (campus.isEmpty) ? 'datos por agregar' : campus;
     final safeHorario = (horario.isEmpty) ? 'datos por agregar' : horario;
@@ -79,7 +83,10 @@ class CardPeticiones extends StatelessWidget {
                   builder: (context, countSnap) {
                     final deacuerdoCount = countSnap.data ?? 0;
                     final totalNecesario = (meta <= 0) ? 0 : meta;
-                    final faltantes = (totalNecesario - deacuerdoCount).clamp(0, 1 << 31);
+                    final faltantes = (totalNecesario - deacuerdoCount).clamp(
+                      0,
+                      1 << 31,
+                    );
                     final percent = (totalNecesario > 0)
                         ? (deacuerdoCount / totalNecesario).clamp(0.0, 1.0)
                         : 0.0;
@@ -89,10 +96,13 @@ class CardPeticiones extends StatelessWidget {
                         CircularPercentIndicator(
                           radius: 40.0,
                           lineWidth: 15.0,
-                          percent: percent,
+                          percent: (deacuerdoCount / totalNecesario),
                           center: Text(
                             '$deacuerdoCount',
-                            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 20,
+                            ),
                           ),
                           progressColor: AppColors.primaryProgress,
                           backgroundColor: AppColors.primaryLight,
@@ -117,6 +127,15 @@ class CardPeticiones extends StatelessWidget {
                             ),
                           ],
                         ),
+                        deacuerdoCount == totalNecesario
+                            ? ElevatedButton(
+                                onPressed: () async {},
+                                child: Text(
+                                  "Exportar Excel",
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                              )
+                            : SizedBox(),
                       ],
                     );
                   },
@@ -183,10 +202,6 @@ class EstudianteModel {
   }
 
   Map<String, String> toMapForExcel() {
-    return {
-      "nombre": nombre,
-      "correo": correo,
-      "cuenta": cuenta,
-    };
+    return {"nombre": nombre, "correo": correo, "cuenta": cuenta};
   }
 }
